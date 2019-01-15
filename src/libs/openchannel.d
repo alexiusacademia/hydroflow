@@ -157,29 +157,3 @@ class OpenChannel
     }
 
 }
-
-/**
- * A custom exception for invalid dimensions.
- */
-class DimensionException : Exception {
-  /**
-   * Construct a {@code DimensionException} with a message parameter.
-   * @param message A string description of the exception.
-   */
-  this(string message) {
-    super(message);
-  }
-}
-
-/**
- * A custom exception for handling illegal or invalid values or constants.
- */
-class InvalidValueException : Exception {
-  /**
-   * Construct a {@code InvalidValueException} with a message parameter.
-   * @param message A string description of the exception.
-   */
-  this(string message){
-    super(message);
-  }
-}
