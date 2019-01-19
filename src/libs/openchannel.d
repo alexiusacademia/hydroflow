@@ -21,21 +21,21 @@ class OpenChannel
     /// Discharge / Flow Rate
     double discharge;
 
-    protected double bedSlope;
+    double bedSlope;
 
-    protected double waterDepth;
+    double waterDepth;
 
-    protected float manningRoughness;
+    float manningRoughness;
 
-    protected double wettedPerimeter;
+    double wettedPerimeter;
 
-    protected double wettedArea;
+    double wettedArea;
 
-    protected double hydraulicRadius;
+    double hydraulicRadius;
 
-    protected double averageVelocity;
+    double averageVelocity;
 
-    protected float froudeNumber;
+    float froudeNumber;
 
     protected FlowType flowType;
 
