@@ -1,13 +1,11 @@
 import std.stdio;
-import src.libs.openchannel;
 
-void main(string[] args) 
+import src.libs.openchannel_rectangular;
+
+void main(string[] args)
 {
-    OpenChannel oc = new OpenChannel();
-
-    oc.setWaterDepth(9);
-
-    writeln(oc.getWaterDepth);
+  RectangularOpenChannel roc = new RectangularOpenChannel();
+  roc.setWaterDepth = 2;
+  writeln(roc.getWaterDepth());
+  writeln(cast(int) roc.FlowType.SUPERCRITICAL);
 }
-
-
