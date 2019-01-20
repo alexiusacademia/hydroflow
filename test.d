@@ -1,9 +1,9 @@
 import std.stdio;
 import std.datetime;
 
-import src.libs.openchannel_rectangular;
+import src.hydroflow;
 
-void main(string[] args)
+void main()
 {
   auto t1 = Clock.currTime;
 

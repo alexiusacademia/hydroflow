@@ -1,6 +1,3 @@
-module hydroflow;
+module src.hydroflow;
 
-class Hydroflow 
-{
-    
-}
+public import src.libs.openchannel_rectangular;
