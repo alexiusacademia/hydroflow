@@ -17,6 +17,7 @@ void main(string[] args)
 
   auto t2 = Clock.currTime;
 
-  writeln(roc.getDischarge);
   writeln((t2 - t1), " time in s.");
+
 }
+

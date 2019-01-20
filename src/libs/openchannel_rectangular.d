@@ -6,13 +6,6 @@ import std.stdio;
 
 class RectangularOpenChannel : OpenChannel
 {
-  /// Unknowns
-  public enum Unknown {
-    DISCHARGE,
-    BED_SLOPE,
-    WATER_DEPTH,
-    BASE_WIDTH
-  }
 
   /// Base width or the channel width for rectangular sections.
   double baseWidth;
@@ -21,32 +14,63 @@ class RectangularOpenChannel : OpenChannel
   /// Calculated properties
   double wettedArea, wettedPerimeter;
 
-
   /// Constructor
-  this() {
+  this()
+  {
     this.unknown = Unknown.DISCHARGE;
   }
 
   /// Initialize the RectangularOpenChannel with the unknown as given
-  this(Unknown u) {
+  this(Unknown u)
+  {
     this.unknown = u;
   }
 
   /++ 
   + Solve for the unknown discharge.
   +/
-  void solveForDischarge() {
-    wettedArea = baseWidth * waterDepth;
-    wettedPerimeter = baseWidth + 2 * waterDepth;
-    hydraulicRadius = wettedArea / wettedPerimeter;
-    averageVelocity = (1.0 / manningRoughness) * sqrt(bedSlope) * pow(hydraulicRadius, (2.0/3));
-    discharge = averageVelocity * wettedArea;
+  void solveForDischarge()
+  {
+    if (!isValidInputs(isValidBaseWidth(Unknown.DISCHARGE),
+                      isValidBedSlope(Unknown.DISCHARGE),
+                      isValidManning()))
+    {
+      wettedArea = baseWidth * waterDepth;
+      wettedPerimeter = baseWidth + 2 * waterDepth;
+      hydraulicRadius = wettedArea / wettedPerimeter;
+      averageVelocity = (1.0 / manningRoughness) * sqrt(bedSlope) * pow(hydraulicRadius, (2.0 / 3));
+      discharge = averageVelocity * wettedArea;
+
+      writeln(errorMessage);
+    }
   }
 
   /++ 
   + Setters
   +/
-  void setBaseWidth(double b) {
+  void setBaseWidth(double b)
+  {
     baseWidth = b;
+  }
+
+  private bool isValidBaseWidth(Unknown u)
+  {
+    /**
+    * Base width error checking.
+    */
+    if (isNaN(baseWidth) && (u != Unknown.BASE_WIDTH))
+    {
+      errorMessage = "Base width must be numeric.";
+      return false;
+    }
+
+    if (baseWidth <= 0.0 && u != Unknown.BASE_WIDTH)
+    {
+      errorMessage = "Base width must be greater than zero.";
+      return false;
+    }
+
+    errorMessage = "Calculation successful.";
+    return true;
   }
 }

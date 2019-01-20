@@ -1,6 +1,11 @@
 module src.libs.openchannel;
 
-class OpenChannel 
+import std.math;
+
+/++ +++++++++++++++++++++
++   Open Channel class
+++++++++++++++++++++++ +/
+class OpenChannel
 {
     /** ****************************************
     * Constants
@@ -12,10 +17,20 @@ class OpenChannel
     /** ****************************************
     * Properties
     ***************************************** */
-    public enum FlowType {
+    public enum FlowType
+    {
         CRITICAL,
         SUBCRITICAL,
         SUPERCRITICAL
+    }
+
+    /// Unknowns
+    public enum Unknown
+    {
+        DISCHARGE,
+        BED_SLOPE,
+        WATER_DEPTH,
+        BASE_WIDTH
     }
 
     /// Discharge / Flow Rate
@@ -51,59 +66,73 @@ class OpenChannel
     * Getters
     ***************************************** */
 
-    public double getDischarge() {
+    public double getDischarge()
+    {
         return discharge;
     }
 
-    public double getAverageVelocity() {
+    public double getAverageVelocity()
+    {
         return averageVelocity;
     }
 
-    public double getBedSlope() {
+    public double getBedSlope()
+    {
         return bedSlope;
     }
 
-    public double getWaterDepth() {
+    public double getWaterDepth()
+    {
         return waterDepth;
     }
 
-    public double getWettedPerimeter() {
+    public double getWettedPerimeter()
+    {
         return wettedPerimeter;
     }
 
-    public double getWettedArea() {
+    public double getWettedArea()
+    {
         return wettedArea;
     }
 
-    public double getHydraulicRadius() {
+    public double getHydraulicRadius()
+    {
         return hydraulicRadius;
     }
 
-    public double getFroudeNumber() {
+    public double getFroudeNumber()
+    {
         return froudeNumber;
     }
 
-    public double getManningRoughness() {
+    public double getManningRoughness()
+    {
         return manningRoughness;
     }
 
-    public FlowType getFlowType() {
+    public FlowType getFlowType()
+    {
         return flowType;
     }
 
-    public double getHydraulicDepth() {
+    public double getHydraulicDepth()
+    {
         return hydraulicDepth;
     }
 
-    public double getDischargeIntensity() {
+    public double getDischargeIntensity()
+    {
         return dischargeIntensity;
     }
 
-    public double getCriticalDepth() {
+    public double getCriticalDepth()
+    {
         return criticalDepth;
     }
 
-    public double getCriticalSlope() {
+    public double getCriticalSlope()
+    {
         return criticalSlope;
     }
 
@@ -111,7 +140,8 @@ class OpenChannel
     * Check if an error has occurred.
     * @return isError
     */
-    public bool isCalculationSuccessful() {
+    public bool isCalculationSuccessful()
+    {
         return isCalculationSuccessful;
     }
 
@@ -119,41 +149,112 @@ class OpenChannel
     * Gets the error message.
     * @return errMessage
     */
-    public string getErrMessage() {
+    public string getErrMessage()
+    {
         return errorMessage;
     }
 
     /** ***************************************
     * Setters
     **************************************** */
-    public void setBedSlope(double pBedSlope) {
+    public void setBedSlope(double pBedSlope)
+    {
         bedSlope = pBedSlope;
     }
 
-    public void setDischarge(double pDischarge) {
+    public void setDischarge(double pDischarge)
+    {
         discharge = pDischarge;
     }
 
-    public void setWaterDepth(double pWaterDepth) {
+    public void setWaterDepth(double pWaterDepth)
+    {
         waterDepth = pWaterDepth;
     }
 
-    public void setManningRoughness(double pManningRoughness) {
+    public void setManningRoughness(double pManningRoughness)
+    {
         manningRoughness = pManningRoughness;
     }
 
     /**
     * Methods
     */
-    protected void calculateFlowType() {
+    protected void calculateFlowType()
+    {
         // Flow type
-        if (this.froudeNumber == 1) {
+        if (this.froudeNumber == 1)
+        {
             flowType = FlowType.CRITICAL;
-        } else if (this.froudeNumber < 1) {
+        }
+        else if (this.froudeNumber < 1)
+        {
             flowType = FlowType.SUBCRITICAL;
-        } else {
+        }
+        else
+        {
             flowType = FlowType.SUPERCRITICAL;
         }
     }
 
+    protected bool isValidManning()
+    {
+        /**
+        * Manning's roughness error checking
+        */
+        if (manningRoughness <= 0.0)
+        {
+            errorMessage = "Manning\'s roughness must be set greater than zero.";
+            return false;
+        }
+
+        if (isNaN(manningRoughness))
+        {
+            errorMessage = "Manning\'s roughness must be numeric.";
+            return false;
+        }
+
+        errorMessage = "Calculation successful.";
+        return true;
+    }
+
+    /**
+    * Bed slope error checking
+    */
+    protected bool isValidBedSlope(Unknown u)
+    {
+
+        if (isNaN(bedSlope) && u != Unknown.BED_SLOPE)
+        {
+            errorMessage = "Bed slope must be numeric.";
+            return false;
+        }
+
+        if (bedSlope <= 0.0)
+        {
+            errorMessage = "Bed slope must be set greater than zero.";
+            return false;
+        }
+
+        errorMessage = "Calculation successful.";
+        return true;
+    }
+
+    protected bool isValidInputs(A...) (A a) {
+        bool res;
+        foreach(b; a) {
+            res = res && b;
+        }
+
+        return res;
+    }
+    
+}
+
+class InvalidInputException : Exception
+{
+    this(string msg, string file = __FILE__, size_t line = __LINE__)
+    {
+        super(msg, file, line);
+    }
 }
