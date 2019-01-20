@@ -223,7 +223,6 @@ class OpenChannel
     */
     protected bool isValidBedSlope(Unknown u)
     {
-
         if (isNaN(bedSlope) && u != Unknown.BED_SLOPE)
         {
             errorMessage = "Bed slope must be numeric.";
@@ -233,6 +232,22 @@ class OpenChannel
         if (bedSlope <= 0.0)
         {
             errorMessage = "Bed slope must be set greater than zero.";
+            return false;
+        }
+
+        errorMessage = "Calculation successful.";
+        return true;
+    }
+
+    protected bool isValidWaterDepth(Unknown u) {
+        if (isNaN(waterDepth) && u != Unknown.WATER_DEPTH) {
+            errorMessage = "Water depth must be set to numeric.";
+            return false;
+        }
+
+        if (waterDepth < 0.0)
+        {
+            errorMessage = "Water depth must be set greater than zero.";
             return false;
         }
 

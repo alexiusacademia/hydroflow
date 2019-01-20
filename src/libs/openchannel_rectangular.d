@@ -9,12 +9,14 @@ class RectangularOpenChannel : OpenChannel
 
   /// Base width or the channel width for rectangular sections.
   double baseWidth;
+
+  /// Unknown, to be calculated
   Unknown unknown;
 
   /// Calculated properties
   double wettedArea, wettedPerimeter;
 
-  /// Constructor
+  /// Empty Constructor
   this()
   {
     this.unknown = Unknown.DISCHARGE;
@@ -37,6 +39,11 @@ class RectangularOpenChannel : OpenChannel
     {
       wettedArea = baseWidth * waterDepth;
       wettedPerimeter = baseWidth + 2 * waterDepth;
+
+      if (wettedPerimeter == 0.0) {
+        return;
+      }
+
       hydraulicRadius = wettedArea / wettedPerimeter;
       averageVelocity = (1.0 / manningRoughness) * sqrt(bedSlope) * pow(hydraulicRadius, (2.0 / 3));
       discharge = averageVelocity * wettedArea;
@@ -64,7 +71,7 @@ class RectangularOpenChannel : OpenChannel
       return false;
     }
 
-    if (baseWidth <= 0.0 && u != Unknown.BASE_WIDTH)
+    if (baseWidth < 0.0 && u != Unknown.BASE_WIDTH)
     {
       errorMessage = "Base width must be greater than zero.";
       return false;
