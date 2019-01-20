@@ -60,6 +60,9 @@ class RectangularOpenChannel : OpenChannel
     baseWidth = b;
   }
 
+  /+++++++++++++++++++++++++++++++++++++++++++++++
+  +               Error handling                 +
+  +++++++++++++++++++++++++++++++++++++++++++++++/
   private bool isValidBaseWidth(Unknown u)
   {
     /**

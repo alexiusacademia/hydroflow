@@ -197,11 +197,15 @@ class OpenChannel
         }
     }
 
+    /+++++++++++++++++++++++++++++++++++++++++++++++
+    +               Error handling                 +
+    +++++++++++++++++++++++++++++++++++++++++++++++/
+
+    /**
+    * Manning's roughness error checking
+    */
     protected bool isValidManning()
     {
-        /**
-        * Manning's roughness error checking
-        */
         if (manningRoughness <= 0.0)
         {
             errorMessage = "Manning\'s roughness must be set greater than zero.";
@@ -239,8 +243,13 @@ class OpenChannel
         return true;
     }
 
-    protected bool isValidWaterDepth(Unknown u) {
-        if (isNaN(waterDepth) && u != Unknown.WATER_DEPTH) {
+    /**
+    *   Water depth error checking
+    */
+    protected bool isValidWaterDepth(Unknown u)
+    {
+        if (isNaN(waterDepth) && u != Unknown.WATER_DEPTH)
+        {
             errorMessage = "Water depth must be set to numeric.";
             return false;
         }
@@ -255,15 +264,17 @@ class OpenChannel
         return true;
     }
 
-    protected bool isValidInputs(A...) (A a) {
+    protected bool isValidInputs(A...)(A a)
+    {
         bool res;
-        foreach(b; a) {
+        foreach (b; a)
+        {
             res = res && b;
         }
 
         return res;
     }
-    
+
 }
 
 class InvalidInputException : Exception
