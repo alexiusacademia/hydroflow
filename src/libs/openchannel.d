@@ -11,8 +11,10 @@ class OpenChannel
     * Constants
     ***************************************** */
     const double GRAVITY_METRIC = 9.81;
-    const double DEPTH_TRIAL_INCREMENT = 0.00001;
-    const double SLOPE_TRIAL_INCREMENT = 0.0000001;
+    // const double DEPTH_TRIAL_INCREMENT = 0.00001;
+    // const double SLOPE_TRIAL_INCREMENT = 0.0000001;
+    // const TRIAL_INCREMENT = 0.00001;
+    const ERROR = 0.0001;            // Trial error max to 1%
 
     /** ****************************************
     * Properties
@@ -52,6 +54,8 @@ class OpenChannel
 
     float froudeNumber;
 
+    Unknown unknown;
+
     protected FlowType flowType;
 
     protected double hydraulicDepth;
@@ -60,11 +64,11 @@ class OpenChannel
     protected double criticalSlope;
 
     protected bool isCalculationSuccess;
-    protected string errorMessage;
+    public string errorMessage;
 
-    /** ****************************************
-    * Getters
-    ***************************************** */
+    /+++++++++++++++++++++++++++++++++++++++++++++++ 
+    +                  Getters                     +
+    +++++++++++++++++++++++++++++++++++++++++++++++/
 
     public double getDischarge()
     {
@@ -154,9 +158,9 @@ class OpenChannel
         return errorMessage;
     }
 
-    /** ***************************************
-    * Setters
-    **************************************** */
+    /+++++++++++++++++++++++++++++++++++++++++++++++ 
+    +                  Setters                     +
+    +++++++++++++++++++++++++++++++++++++++++++++++/
     public void setBedSlope(double pBedSlope)
     {
         bedSlope = pBedSlope;
@@ -177,9 +181,13 @@ class OpenChannel
         manningRoughness = pManningRoughness;
     }
 
-    /**
-    * Methods
-    */
+    public void setUnknown(Unknown u) {
+        this.unknown = u;
+    }
+
+    /+++++++++++++++++++++++++++++++++++++++++++++++
+    +                   Methods                    +
+    +++++++++++++++++++++++++++++++++++++++++++++++/
     protected void calculateFlowType()
     {
         // Flow type
@@ -218,7 +226,7 @@ class OpenChannel
             return false;
         }
 
-        errorMessage = "Calculation successful.";
+        // errorMessage = "Valid manning's rougness. Calculation successful.";
         return true;
     }
 
@@ -233,13 +241,13 @@ class OpenChannel
             return false;
         }
 
-        if (bedSlope <= 0.0)
+        if (bedSlope <= 0.0 && u != Unknown.BED_SLOPE)
         {
             errorMessage = "Bed slope must be set greater than zero.";
             return false;
         }
 
-        errorMessage = "Calculation successful.";
+        // errorMessage = "Valid bed slope. Calculation successful.";
         return true;
     }
 
@@ -254,24 +262,41 @@ class OpenChannel
             return false;
         }
 
-        if (waterDepth < 0.0)
+        if (waterDepth <= 0.0 && u != Unknown.WATER_DEPTH)
         {
-            errorMessage = "Water depth must be set greater than zero.";
+            errorMessage = "Water depth must be set greater than or equal to zero.";
             return false;
         }
 
-        errorMessage = "Calculation successful.";
+        // errorMessage = "Valid water depth. Calculation successful.";
         return true;
     }
 
+    protected bool isValidDischarge(Unknown u) {
+        if (isNaN(discharge) && u != Unknown.DISCHARGE) {
+            errorMessage = "Discharge must be numeric.";
+            return false;
+        }
+
+        if (discharge < 0 && u != Unknown.DISCHARGE) {
+            errorMessage = "Discharge must be set greater than zero.";
+            return false;
+        }
+
+        // errorMessage = "Valid discharge. Calculation successful.";
+        return true;
+    }
+
+    /// Check if all conditions are true
     protected bool isValidInputs(A...)(A a)
     {
-        bool res;
+        bool res = true;
         foreach (b; a)
         {
             res = res && b;
         }
 
+        if (res) errorMessage = "Calculation successful.";
         return res;
     }
 
