@@ -44,7 +44,8 @@ class RectangularOpenChannel : OpenChannel
   /+++++++++++++++++++++++++++++++++++++++++++++++ 
   +                  Getters                     +
   +++++++++++++++++++++++++++++++++++++++++++++++/
-  double getBaseWidth() {
+  double getBaseWidth()
+  {
     return baseWidth;
   }
 
@@ -64,17 +65,20 @@ class RectangularOpenChannel : OpenChannel
       }
       break;
     case Unknown.WATER_DEPTH:
-      if (solveForWaterDepth) {
+      if (solveForWaterDepth)
+      {
         return true;
       }
       break;
     case Unknown.BASE_WIDTH:
-      if (solveForBaseWidth) {
+      if (solveForBaseWidth)
+      {
         return true;
       }
       break;
     case Unknown.BED_SLOPE:
-      if (solveForBedSlope) {
+      if (solveForBedSlope)
+      {
         return true;
       }
       break;
@@ -106,7 +110,7 @@ class RectangularOpenChannel : OpenChannel
       hydraulicRadius = wettedArea / wettedPerimeter;
       averageVelocity = (1.0 / manningRoughness) * sqrt(bedSlope) * pow(hydraulicRadius, (2.0 / 3));
       discharge = averageVelocity * wettedArea;
-      
+
       return true;
     }
     else
@@ -116,157 +120,172 @@ class RectangularOpenChannel : OpenChannel
   }
 
   /// Solve for the unknown water depth
-  private bool solveForWaterDepth() {
-    if (isValidInputs(isValidBaseWidth(Unknown.WATER_DEPTH), isValidBedSlope(Unknown.WATER_DEPTH),
-      isValidDischarge(Unknown.WATER_DEPTH), isValidManning)) {
-        
-        double trialDischarge = 0, 
-              increment = 0.0001;
-        waterDepth = 0;
-        
-        const allowedDiff = discharge * ERROR;
+  private bool solveForWaterDepth()
+  {
+    if (isValidInputs(isValidBaseWidth(Unknown.WATER_DEPTH),
+        isValidBedSlope(Unknown.WATER_DEPTH), isValidDischarge(Unknown.WATER_DEPTH), isValidManning))
+    {
 
-        // Start of trial and error
-        while (abs(discharge - trialDischarge) > allowedDiff)
+      double trialDischarge = 0, increment = 0.0001;
+      waterDepth = 0;
+
+      const allowedDiff = discharge * ERROR;
+
+      // Start of trial and error
+      while (abs(discharge - trialDischarge) > allowedDiff)
+      {
+        waterDepth += increment;
+        wettedArea = baseWidth * waterDepth;
+        wettedPerimeter = baseWidth + 2 * waterDepth;
+
+        // Check if both base width and water depth are zero.
+        // Cancel the calculation is so, which will yield infinity in calculation
+        // of hydraulic radius, R.
+        if (wettedPerimeter == 0.0)
         {
-          waterDepth += increment;
-          wettedArea = baseWidth * waterDepth;
-          wettedPerimeter = baseWidth + 2 * waterDepth;
+          errorMessage = "Both water depth and base width cannot be set to zero.";
+          return false;
+        }
 
-          // Check if both base width and water depth are zero.
-          // Cancel the calculation is so, which will yield infinity in calculation
-          // of hydraulic radius, R.
-          if (wettedPerimeter == 0.0)
-          {
-            errorMessage = "Both water depth and base width cannot be set to zero.";
-            return false;
-          }
+        hydraulicRadius = wettedArea / wettedPerimeter;
+        averageVelocity = (1.0 / manningRoughness) * sqrt(bedSlope) * pow(hydraulicRadius, (2.0 / 3));
+        trialDischarge = averageVelocity * wettedArea;
 
-          hydraulicRadius = wettedArea / wettedPerimeter;
-          averageVelocity = (1.0 / manningRoughness) * sqrt(bedSlope) * pow(hydraulicRadius, (2.0 / 3));
-          trialDischarge = averageVelocity * wettedArea;
-          
-          /+
+        /+
           + My root finding algorithm
           +/
-          if (trialDischarge < discharge) {
-            increment *= 2.1;
-          }
+        if (trialDischarge < discharge)
+        {
+          increment *= 2.1;
+        }
 
-          if (trialDischarge > discharge) {
-            waterDepth -= increment;
-            increment *= .75;
-          }
-          /+
+        if (trialDischarge > discharge)
+        {
+          waterDepth -= increment;
+          increment *= .75;
+        }
+        /+
           + End of root finding algorithm
           +/
-        }
-        return true;
-    } else {
+      }
+      return true;
+    }
+    else
+    {
       return false;
     }
   }
 
   /// Solve for the unknown base width
-  private bool solveForBaseWidth() {
-    if (isValidInputs(isValidWaterDepth(Unknown.BASE_WIDTH), isValidBedSlope(Unknown.BASE_WIDTH),
-      isValidDischarge(Unknown.BASE_WIDTH), isValidManning)) {
-        
-        double trialDischarge = 0, 
-              increment = 0.0001;
-        baseWidth = 0;
-        
-        const allowedDiff = discharge * ERROR;
+  private bool solveForBaseWidth()
+  {
+    if (isValidInputs(isValidWaterDepth(Unknown.BASE_WIDTH),
+        isValidBedSlope(Unknown.BASE_WIDTH), isValidDischarge(Unknown.BASE_WIDTH), isValidManning))
+    {
 
-        // Start of trial and error
-        while (abs(discharge - trialDischarge) > allowedDiff)
+      double trialDischarge = 0, increment = 0.0001;
+      baseWidth = 0;
+
+      const allowedDiff = discharge * ERROR;
+
+      // Start of trial and error
+      while (abs(discharge - trialDischarge) > allowedDiff)
+      {
+        baseWidth += increment;
+        wettedArea = baseWidth * waterDepth;
+        wettedPerimeter = baseWidth + 2 * waterDepth;
+
+        // Check if both base width and water depth are zero.
+        // Cancel the calculation is so, which will yield infinity in calculation
+        // of hydraulic radius, R.
+        if (wettedPerimeter == 0.0)
         {
-          baseWidth += increment;
-          wettedArea = baseWidth * waterDepth;
-          wettedPerimeter = baseWidth + 2 * waterDepth;
+          errorMessage = "Both water depth and base width cannot be set to zero.";
+          return false;
+        }
 
-          // Check if both base width and water depth are zero.
-          // Cancel the calculation is so, which will yield infinity in calculation
-          // of hydraulic radius, R.
-          if (wettedPerimeter == 0.0)
-          {
-            errorMessage = "Both water depth and base width cannot be set to zero.";
-            return false;
-          }
+        hydraulicRadius = wettedArea / wettedPerimeter;
+        averageVelocity = (1.0 / manningRoughness) * sqrt(bedSlope) * pow(hydraulicRadius, (2.0 / 3));
+        trialDischarge = averageVelocity * wettedArea;
 
-          hydraulicRadius = wettedArea / wettedPerimeter;
-          averageVelocity = (1.0 / manningRoughness) * sqrt(bedSlope) * pow(hydraulicRadius, (2.0 / 3));
-          trialDischarge = averageVelocity * wettedArea;
-          
-          /+
+        /+
           + My root finding algorithm
           +/
-          if (trialDischarge < discharge) {
-            increment *= 2.1;
-          }
+        if (trialDischarge < discharge)
+        {
+          increment *= 2.1;
+        }
 
-          if (trialDischarge > discharge) {
-            baseWidth -= increment;
-            increment *= .75;
-          }
-          /+
+        if (trialDischarge > discharge)
+        {
+          baseWidth -= increment;
+          increment *= .75;
+        }
+        /+
           + End of root finding algorithm
           +/
-        }
-        return true;
-    } else {
+      }
+      return true;
+    }
+    else
+    {
       return false;
     }
   }
 
   /// Solve for the unknown bed slope
-  private bool solveForBedSlope() {
-    if (isValidInputs(isValidWaterDepth(Unknown.BED_SLOPE), isValidBaseWidth(Unknown.BED_SLOPE),
-      isValidDischarge(Unknown.BED_SLOPE), isValidManning)) {
-        
-        double trialDischarge = 0, 
-              increment = 0.0000001;
-        bedSlope = 0;
-        
-        const allowedDiff = discharge * ERROR;
+  private bool solveForBedSlope()
+  {
+    if (isValidInputs(isValidWaterDepth(Unknown.BED_SLOPE),
+        isValidBaseWidth(Unknown.BED_SLOPE), isValidDischarge(Unknown.BED_SLOPE), isValidManning))
+    {
 
-        // Start of trial and error
-        while (abs(discharge - trialDischarge) > allowedDiff)
+      double trialDischarge = 0, increment = 0.0000001;
+      bedSlope = 0;
+
+      const allowedDiff = discharge * ERROR;
+
+      // Start of trial and error
+      while (abs(discharge - trialDischarge) > allowedDiff)
+      {
+        bedSlope += increment;
+        wettedArea = baseWidth * waterDepth;
+        wettedPerimeter = baseWidth + 2 * waterDepth;
+
+        // Check if both base width and water depth are zero.
+        // Cancel the calculation is so, which will yield infinity in calculation
+        // of hydraulic radius, R.
+        if (wettedPerimeter == 0.0)
         {
-          bedSlope += increment;
-          wettedArea = baseWidth * waterDepth;
-          wettedPerimeter = baseWidth + 2 * waterDepth;
+          errorMessage = "Both water depth and base width cannot be set to zero.";
+          return false;
+        }
 
-          // Check if both base width and water depth are zero.
-          // Cancel the calculation is so, which will yield infinity in calculation
-          // of hydraulic radius, R.
-          if (wettedPerimeter == 0.0)
-          {
-            errorMessage = "Both water depth and base width cannot be set to zero.";
-            return false;
-          }
+        hydraulicRadius = wettedArea / wettedPerimeter;
+        averageVelocity = (1.0 / manningRoughness) * sqrt(bedSlope) * pow(hydraulicRadius, (2.0 / 3));
+        trialDischarge = averageVelocity * wettedArea;
 
-          hydraulicRadius = wettedArea / wettedPerimeter;
-          averageVelocity = (1.0 / manningRoughness) * sqrt(bedSlope) * pow(hydraulicRadius, (2.0 / 3));
-          trialDischarge = averageVelocity * wettedArea;
-          
-          /+
+        /+
           + My root finding algorithm
           +/
-          if (trialDischarge < discharge) {
-            increment *= 2.1;
-          }
+        if (trialDischarge < discharge)
+        {
+          increment *= 2.1;
+        }
 
-          if (trialDischarge > discharge) {
-            bedSlope -= increment;
-            increment *= .75;
-          }
-          /+
+        if (trialDischarge > discharge)
+        {
+          bedSlope -= increment;
+          increment *= .75;
+        }
+        /+
           + End of root finding algorithm
           +/
-        }
-        return true;
-    } else {
+      }
+      return true;
+    }
+    else
+    {
       return false;
     }
   }
