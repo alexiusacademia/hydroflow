@@ -8,24 +8,25 @@ void main()
 {
   auto t1 = Clock.currTime;
 
-  RectangularOpenChannel roc = new RectangularOpenChannel();
+  TrapezoidalOpenChannel toc = new TrapezoidalOpenChannel;
   
-  roc.setUnknown = roc.Unknown.BED_SLOPE;
+  toc.setUnknown = toc.Unknown.DISCHARGE;
 
-  roc.setBaseWidth = 1;
-  roc.setWaterDepth = 0.989;
-  roc.setManningRoughness = 0.015;
-  roc.setDischarge = 1;
+  toc.setBedSlope = 0.001;
+  toc.setBaseWidth = 1;
+  toc.setWaterDepth = 0.989;
+  toc.setManningRoughness = 0.015;
+  toc.setSideSlope = 0;
 
-  const success = roc.solve;
+  const success = toc.solve;
 
   auto t2 = Clock.currTime;
 
   writeln((t2 - t1), " calculation time.");
   if (success) {
-    writeln("Bed Slope: ", round(roc.getBedSlope * 100_000) / 100_000);
+    writeln("Discharge: ", toc.getDischarge);
   } else {
-    writeln(roc.errorMessage);
+    writeln(toc.errorMessage);
   }
 }
 

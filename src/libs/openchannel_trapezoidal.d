@@ -103,8 +103,8 @@ class TrapezoidalOpenChannel : OpenChannel
         if (isValidInputs(isValidBaseWidth(Unknown.DISCHARGE), isValidBedSlope(Unknown.DISCHARGE),
                 isValidWaterDepth(Unknown.DISCHARGE), isValidManning))
         {
-            wettedArea = baseWidth * waterDepth;
-            wettedPerimeter = baseWidth + 2 * waterDepth;
+            wettedArea = (baseWidth + waterDepth * sideSlope) * waterDepth;
+            wettedPerimeter = 2 * waterDepth * sqrt(pow(sideSlope, 2) + 1) + baseWidth;
 
             // Check if both base width and water depth are zero.
             // Cancel the calculation is so, which will yield infinity in calculation
