@@ -101,7 +101,7 @@ class TrapezoidalOpenChannel : OpenChannel
     private bool solveForDischarge()
     {
         if (isValidInputs(isValidBaseWidth(Unknown.DISCHARGE), isValidBedSlope(Unknown.DISCHARGE),
-                isValidWaterDepth(Unknown.DISCHARGE), isValidManning))
+                isValidWaterDepth(Unknown.DISCHARGE), isValidSideslope(Unknown.DISCHARGE), isValidManning))
         {
             wettedArea = (baseWidth + waterDepth * sideSlope) * waterDepth;
             wettedPerimeter = 2 * waterDepth * sqrt(pow(sideSlope, 2) + 1) + baseWidth;
@@ -132,7 +132,7 @@ class TrapezoidalOpenChannel : OpenChannel
     private bool solveForWaterDepth()
     {
         if (isValidInputs(isValidBaseWidth(Unknown.WATER_DEPTH), isValidBedSlope(Unknown.WATER_DEPTH),
-                isValidDischarge(Unknown.WATER_DEPTH), isValidManning))
+                isValidDischarge(Unknown.WATER_DEPTH), isValidSideslope(Unknown.WATER_DEPTH), isValidManning))
         {
 
             double trialDischarge = 0, increment = 0.0001;
@@ -190,7 +190,7 @@ class TrapezoidalOpenChannel : OpenChannel
     private bool solveForBaseWidth()
     {
         if (isValidInputs(isValidWaterDepth(Unknown.BASE_WIDTH), isValidBedSlope(Unknown.BASE_WIDTH),
-                isValidDischarge(Unknown.BASE_WIDTH), isValidManning))
+                isValidDischarge(Unknown.BASE_WIDTH), isValidSideslope(Unknown.BASE_WIDTH), isValidManning))
         {
 
             double trialDischarge = 0, increment = 0.0001;
@@ -248,7 +248,7 @@ class TrapezoidalOpenChannel : OpenChannel
     private bool solveForBedSlope()
     {
         if (isValidInputs(isValidWaterDepth(Unknown.BED_SLOPE), isValidBaseWidth(Unknown.BED_SLOPE),
-                isValidDischarge(Unknown.BED_SLOPE), isValidManning))
+                isValidDischarge(Unknown.BED_SLOPE), isValidSideslope(Unknown.BED_SLOPE), isValidManning))
         {
 
             double trialDischarge = 0, increment = 0.0000001;
