@@ -323,4 +323,21 @@ class TrapezoidalOpenChannel : OpenChannel
         errorMessage = "Calculation successful.";
         return true;
     }
+
+    /// Sideslope error checking
+    private bool isValidSideslope(Unknown u)
+    {
+        if (isNaN(sideSlope)) {
+            errorMessage = "Sideslope must be numeric.";
+            return false;
+        }
+
+        if (sideSlope < 0) {
+            errorMessage = "Sideslope must be greater than zero.";
+            return false;
+        }
+
+        errorMessage = "Calculation successful.";
+        return true;
+    }
 }
