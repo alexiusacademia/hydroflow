@@ -144,8 +144,8 @@ class TrapezoidalOpenChannel : OpenChannel
             while (abs(discharge - trialDischarge) > allowedDiff)
             {
                 waterDepth += increment;
-                wettedArea = baseWidth * waterDepth;
-                wettedPerimeter = baseWidth + 2 * waterDepth;
+                wettedArea = (baseWidth + waterDepth * sideSlope) * waterDepth;
+                wettedPerimeter = 2 * waterDepth * sqrt(pow(sideSlope, 2) + 1) + baseWidth;
 
                 // Check if both base width and water depth are zero.
                 // Cancel the calculation is so, which will yield infinity in calculation
@@ -202,8 +202,8 @@ class TrapezoidalOpenChannel : OpenChannel
             while (abs(discharge - trialDischarge) > allowedDiff)
             {
                 baseWidth += increment;
-                wettedArea = baseWidth * waterDepth;
-                wettedPerimeter = baseWidth + 2 * waterDepth;
+                wettedArea = (baseWidth + waterDepth * sideSlope) * waterDepth;
+                wettedPerimeter = 2 * waterDepth * sqrt(pow(sideSlope, 2) + 1) + baseWidth;
 
                 // Check if both base width and water depth are zero.
                 // Cancel the calculation is so, which will yield infinity in calculation
@@ -260,8 +260,8 @@ class TrapezoidalOpenChannel : OpenChannel
             while (abs(discharge - trialDischarge) > allowedDiff)
             {
                 bedSlope += increment;
-                wettedArea = baseWidth * waterDepth;
-                wettedPerimeter = baseWidth + 2 * waterDepth;
+                wettedArea = (baseWidth + waterDepth * sideSlope) * waterDepth;
+                wettedPerimeter = 2 * waterDepth * sqrt(pow(sideSlope, 2) + 1) + baseWidth;
 
                 // Check if both base width and water depth are zero.
                 // Cancel the calculation is so, which will yield infinity in calculation
