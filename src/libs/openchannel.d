@@ -32,7 +32,8 @@ class OpenChannel
         DISCHARGE,
         BED_SLOPE,
         WATER_DEPTH,
-        BASE_WIDTH
+        BASE_WIDTH,
+        PIPE_DIAMETER
     }
 
     /// Discharge / Flow Rate
