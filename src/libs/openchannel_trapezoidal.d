@@ -106,7 +106,7 @@ class TrapezoidalOpenChannel : OpenChannel
             wettedArea = (baseWidth + waterDepth * sideSlope) * waterDepth;
             wettedPerimeter = 2 * waterDepth * sqrt(pow(sideSlope, 2) + 1) + baseWidth;
 
-            // Check if both base width and water depth are zero.
+            // Check if wetted perimeter is zero.
             // Cancel the calculation is so, which will yield infinity in calculation
             // of hydraulic radius, R.
             if (wettedPerimeter == 0.0)
@@ -147,7 +147,7 @@ class TrapezoidalOpenChannel : OpenChannel
                 wettedArea = (baseWidth + waterDepth * sideSlope) * waterDepth;
                 wettedPerimeter = 2 * waterDepth * sqrt(pow(sideSlope, 2) + 1) + baseWidth;
 
-                // Check if both base width and water depth are zero.
+                // Check if wetted perimeter is zero.
                 // Cancel the calculation is so, which will yield infinity in calculation
                 // of hydraulic radius, R.
                 if (wettedPerimeter == 0.0)
@@ -205,7 +205,7 @@ class TrapezoidalOpenChannel : OpenChannel
                 wettedArea = (baseWidth + waterDepth * sideSlope) * waterDepth;
                 wettedPerimeter = 2 * waterDepth * sqrt(pow(sideSlope, 2) + 1) + baseWidth;
 
-                // Check if both base width and water depth are zero.
+                // Check if wetted perimeter is zero.
                 // Cancel the calculation is so, which will yield infinity in calculation
                 // of hydraulic radius, R.
                 if (wettedPerimeter == 0.0)
@@ -263,7 +263,7 @@ class TrapezoidalOpenChannel : OpenChannel
                 wettedArea = (baseWidth + waterDepth * sideSlope) * waterDepth;
                 wettedPerimeter = 2 * waterDepth * sqrt(pow(sideSlope, 2) + 1) + baseWidth;
 
-                // Check if both base width and water depth are zero.
+                // Check if wetted perimeter is zero.
                 // Cancel the calculation is so, which will yield infinity in calculation
                 // of hydraulic radius, R.
                 if (wettedPerimeter == 0.0)
