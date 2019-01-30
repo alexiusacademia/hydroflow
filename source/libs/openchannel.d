@@ -2,9 +2,11 @@ module libs.openchannel;
 
 import std.math;
 
-/++ +++++++++++++++++++++
-+   Open Channel class
-++++++++++++++++++++++ +/
+/++
+    Open Channel
+
+    The base class for all open channels.
++/
 class OpenChannel
 {
     /** ****************************************
