@@ -111,7 +111,7 @@ class TrapezoidalOpenChannel : OpenChannel
             // of hydraulic radius, R.
             if (wettedPerimeter == 0.0)
             {
-                errorMessage = "Both water depth and base width cannot be set to zero.";
+                errorMessage = "Perimeter shall be non-zero positive result. Please check your dimensions";
                 return false;
             }
 
@@ -152,7 +152,7 @@ class TrapezoidalOpenChannel : OpenChannel
                 // of hydraulic radius, R.
                 if (wettedPerimeter == 0.0)
                 {
-                    errorMessage = "Both water depth and base width cannot be set to zero.";
+                    errorMessage = "Perimeter shall be non-zero positive result. Please check your dimensions";
                     return false;
                 }
 
@@ -210,7 +210,7 @@ class TrapezoidalOpenChannel : OpenChannel
                 // of hydraulic radius, R.
                 if (wettedPerimeter == 0.0)
                 {
-                    errorMessage = "Both water depth and base width cannot be set to zero.";
+                    errorMessage = "Perimeter shall be non-zero positive result. Please check your dimensions";
                     return false;
                 }
 
@@ -268,7 +268,7 @@ class TrapezoidalOpenChannel : OpenChannel
                 // of hydraulic radius, R.
                 if (wettedPerimeter == 0.0)
                 {
-                    errorMessage = "Both water depth and base width cannot be set to zero.";
+                    errorMessage = "Perimeter shall be non-zero positive result. Please check your dimensions";
                     return false;
                 }
 
