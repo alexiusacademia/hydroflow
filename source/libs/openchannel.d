@@ -19,6 +19,10 @@ class OpenChannel
     /** ****************************************
     * Properties
     ***************************************** */
+    /**
+        Flow types. These are the categories in which the calculated froude number
+        is compared to.
+    */
     public enum FlowType
     {
         CRITICAL,
