@@ -162,8 +162,8 @@ class TrapezoidalOpenChannel : OpenChannel
                 trialDischarge = averageVelocity * wettedArea;
 
                 /+
-            + My root finding algorithm
-            +/
+                + My root finding algorithm
+                +/
                 if (trialDischarge < discharge)
                 {
                     increment *= 2.1;
@@ -175,8 +175,8 @@ class TrapezoidalOpenChannel : OpenChannel
                     increment *= .75;
                 }
                 /+
-            + End of root finding algorithm
-            +/
+                + End of root finding algorithm
+                +/
             }
             return true;
         }
@@ -220,8 +220,8 @@ class TrapezoidalOpenChannel : OpenChannel
                 trialDischarge = averageVelocity * wettedArea;
 
                 /+
-            + My root finding algorithm
-            +/
+                + My root finding algorithm
+                +/
                 if (trialDischarge < discharge)
                 {
                     increment *= 2.1;
@@ -233,8 +233,8 @@ class TrapezoidalOpenChannel : OpenChannel
                     increment *= .75;
                 }
                 /+
-            + End of root finding algorithm
-            +/
+                + End of root finding algorithm
+                +/
             }
             return true;
         }
@@ -278,8 +278,8 @@ class TrapezoidalOpenChannel : OpenChannel
                 trialDischarge = averageVelocity * wettedArea;
 
                 /+
-            + My root finding algorithm
-            +/
+                + My root finding algorithm
+                +/
                 if (trialDischarge < discharge)
                 {
                     increment *= 2.1;
@@ -291,8 +291,8 @@ class TrapezoidalOpenChannel : OpenChannel
                     increment *= .75;
                 }
                 /+
-            + End of root finding algorithm
-            +/
+                + End of root finding algorithm
+                +/
             }
             return true;
         }
