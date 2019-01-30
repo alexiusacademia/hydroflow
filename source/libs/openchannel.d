@@ -1,4 +1,4 @@
-module src.libs.openchannel;
+module libs.openchannel;
 
 import std.math;
 

@@ -1,11 +1,11 @@
-module src.libs.openchannel_circular;
+module libs.openchannel_circular;
 
 /// Standard modules
 import std.math;
 import std.stdio;
 
 // Custom modules
-import src.libs.openchannel;
+import libs.openchannel;
 
 class CircularOpenChannel : OpenChannel
 {

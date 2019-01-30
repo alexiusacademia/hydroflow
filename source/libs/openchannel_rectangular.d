@@ -1,11 +1,11 @@
-module src.libs.openchannel_rectangular;
+module libs.openchannel_rectangular;
 
 /// Standard modules
 import std.math;
 import std.stdio;
 
 // Custom modules
-import src.libs.openchannel;
+import libs.openchannel;
 
 class RectangularOpenChannel : OpenChannel
 {

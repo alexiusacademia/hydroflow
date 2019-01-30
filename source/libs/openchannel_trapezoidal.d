@@ -1,11 +1,11 @@
-module src.libs.openchannel_trapezoidal;
+module libs.openchannel_trapezoidal;
 
 /// Standard modules
 import std.math;
 import std.stdio;
 
 // Custom modules
-import src.libs.openchannel;
+import libs.openchannel;
 
 class TrapezoidalOpenChannel : OpenChannel
 {
