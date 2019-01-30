@@ -1,0 +1,16 @@
+.dub
+docs.json
+__dummy.html
+docs/
+hydroflow
+hydroflow.so
+hydroflow.dylib
+hydroflow.dll
+hydroflow.a
+hydroflow.lib
+hydroflow-test-*
+*.exe
+*.o
+*.obj
+*.lst
+*.a
