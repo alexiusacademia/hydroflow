@@ -1,0 +1,14 @@
+.dub
+docs.json
+__dummy.html
+docs/
+rectangular_open_channel.so
+rectangular_open_channel.dylib
+rectangular_open_channel.dll
+rectangular_open_channel.a
+rectangular_open_channel.lib
+rectangular_open_channel-test-*
+*.exe
+*.o
+*.obj
+*.lst

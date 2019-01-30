@@ -1,0 +1,14 @@
+{
+	"description": "A sample usage for rectangular open channel.",
+	"license": "Boost",
+	"dependencies": {
+		"hydroflow": {
+			"path": "../../"
+		}
+	},
+	"authors": [
+		"Alexius Academia"
+	],
+	"copyright": "Copyright © 2019, Alexius Academia",
+	"name": "rectangular_open_channel"
+}
