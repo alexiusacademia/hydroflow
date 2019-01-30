@@ -24,6 +24,10 @@ class CircularOpenChannel : OpenChannel
     private double percentFull;
     // Area of central triangle
     private double triangleArea;
+    // Trial discharge
+    private double trialDischarge;
+    // Initial increment for trial and error
+    private double increment;
 
     /+++++++++++++++++++++++++++++++++++++++++++++++
     +                Constructors                  +
@@ -72,6 +76,10 @@ class CircularOpenChannel : OpenChannel
     /// To be called in the application API
     bool solve()
     {
+        // Reset variables
+        trialDischarge = 0;
+        increment = 0.0001;
+
         switch (this.unknown)
         {
         case Unknown.DISCHARGE:
@@ -80,7 +88,12 @@ class CircularOpenChannel : OpenChannel
                 return true;
             }
             break;
-        
+        case Unknown.WATER_DEPTH:
+            if (solveForWaterDepth)
+            {
+                return true;
+            }
+            break;
         default:
             break;
         }
@@ -97,34 +110,7 @@ class CircularOpenChannel : OpenChannel
         if (isValidInputs(isValidDiameter(Unknown.DISCHARGE), isValidBedSlope(Unknown.DISCHARGE),
                 isValidWaterDepth(Unknown.DISCHARGE), isValidManning))
         {
-            almostFull = (waterDepth >= (diameter / 2.0));
-
-            // Calculate theta
-            if (almostFull)
-            {
-                theta = 2 * acos((2 * waterDepth - diameter) / diameter) * 180 / PI;
-            }
-            else
-            {
-                theta = 2 * acos((diameter - 2 * waterDepth) / diameter) * 180 / PI;
-            }
-
-            // Calculate the area of central triangle
-            aTri = pow(diameter, 2) * sin(theta * PI / 180) / 8;
-
-            // Calculate area of sector
-            if (almostFull)
-            {
-                aSec = PI * pow(diameter, 2) * (360 - theta) / 1440;
-                wettedArea = aSec + aTri;
-                wettedPerimeter = PI * diameter * (360 - theta) / 360;
-            }
-            else
-            {
-                aSec = theta * PI * pow(diameter, 2) / 1440;
-                wettedArea = aSec - aTri;
-                wettedPerimeter = PI * diameter * theta / 360;
-            }
+            calculateWettedProperties();
 
             // Check if wetted perimeter is zero.
             // Cancel the calculation is so, which will yield infinity in calculation
@@ -140,6 +126,69 @@ class CircularOpenChannel : OpenChannel
                     (2.0 / 3));
             discharge = averageVelocity * wettedArea;
 
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    /// Solve for the unknown water depth
+    private bool solveForWaterDepth()
+    {
+        if (isValidInputs(isValidDiameter(Unknown.WATER_DEPTH), isValidBedSlope(Unknown.WATER_DEPTH),
+                isValidDischarge(Unknown.WATER_DEPTH), isValidManning))
+        {
+            waterDepth = 0;
+
+            const allowedDiff = discharge * ERROR;
+
+            // Start of trial and error
+            while (abs(discharge - trialDischarge) > allowedDiff)
+            {
+                waterDepth += increment;
+
+                // Check to make sure water depth is not greater than diameter
+                if (waterDepth > diameter)
+                {
+                    errorMessage = "Diameter of the pipe is insufficient to hold the discharge.";
+                    return false;
+                }
+
+                calculateWettedProperties();
+
+                // Check if wetted perimeter is zero.
+                // Cancel the calculation is so, which will yield infinity in calculation
+                // of hydraulic radius, R.
+                if (wettedPerimeter == 0.0)
+                {
+                    errorMessage = "Perimeter shall be non-zero positive result. Please check your dimensions";
+                    return false;
+                }
+
+                hydraulicRadius = wettedArea / wettedPerimeter;
+                averageVelocity = (1.0 / manningRoughness) * sqrt(bedSlope) * pow(hydraulicRadius,
+                        (2.0 / 3));
+                trialDischarge = averageVelocity * wettedArea;
+
+                /+
+                + My root finding algorithm
+                +/
+                if (trialDischarge < discharge)
+                {
+                    increment *= 2.1;
+                }
+
+                if (trialDischarge > discharge)
+                {
+                    waterDepth -= increment;
+                    increment *= .75;
+                }
+                /+
+                + End of root finding algorithm
+                +/
+            }
             return true;
         }
         else
@@ -168,5 +217,44 @@ class CircularOpenChannel : OpenChannel
 
         errorMessage = "Calculation successful.";
         return true;
+    }
+
+    /+++++++++++++++++++++++++++++++++++++++++++++++
+    +              Helper Functions                +
+    +++++++++++++++++++++++++++++++++++++++++++++++/
+    private void calculateWettedProperties()
+    {
+        float theta;
+        float aTri; // Area of central triangle
+        float aSec; // Area of sector
+
+        almostFull = (waterDepth >= (diameter / 2.0));
+
+        // Calculate theta
+        if (almostFull)
+        {
+            theta = 2 * acos((2 * waterDepth - diameter) / diameter) * 180 / PI;
+        }
+        else
+        {
+            theta = 2 * acos((diameter - 2 * waterDepth) / diameter) * 180 / PI;
+        }
+
+        // Calculate the area of central triangle
+        aTri = pow(diameter, 2) * sin(theta * PI / 180) / 8;
+
+        // Calculate area of sector
+        if (almostFull)
+        {
+            aSec = PI * pow(diameter, 2) * (360 - theta) / 1440;
+            wettedArea = aSec + aTri;
+            wettedPerimeter = PI * diameter * (360 - theta) / 360;
+        }
+        else
+        {
+            aSec = theta * PI * pow(diameter, 2) / 1440;
+            wettedArea = aSec - aTri;
+            wettedPerimeter = PI * diameter * theta / 360;
+        }
     }
 }

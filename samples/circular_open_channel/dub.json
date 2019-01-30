@@ -1,0 +1,14 @@
+{
+	"description": "Implementation for circular open channel.",
+	"license": "Boost",
+	"dependencies": {
+		"hydroflow": {
+			"path": "../../"
+		}
+	},
+	"authors": [
+		"Alexius Academia"
+	],
+	"copyright": "Copyright © 2019, Alexius Academia",
+	"name": "circular_open_channel"
+}
