@@ -10,13 +10,13 @@ void main()
 
 	CircularOpenChannel coc = new CircularOpenChannel();
 
-	coc.setUnknown = coc.Unknown.DISCHARGE;
+	coc.setUnknown = coc.Unknown.WATER_DEPTH;
 
 	// Set the given values
 	coc.setBedSlope = 0.001;
 	coc.setDischarge = 1.5;
 	coc.setManningRoughness = 0.015;
-	coc.setDiameter = 1;
+	coc.setDiameter = 2;
 	coc.setWaterDepth = 0.8;
 
 	const success = coc.solve();
@@ -27,7 +27,7 @@ void main()
 
 	if (success)
 	{
-		writeln("Discharge = ", coc.getDischarge);
+		writeln("Water depth = ", coc.getWaterDepth);
 	}
 	else
 	{

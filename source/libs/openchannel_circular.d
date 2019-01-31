@@ -78,7 +78,7 @@ class CircularOpenChannel : OpenChannel
     {
         // Reset variables
         trialDischarge = 0;
-        increment = 0.0001;
+        increment = 0.000001;
 
         switch (this.unknown)
         {
@@ -94,6 +94,12 @@ class CircularOpenChannel : OpenChannel
                 return true;
             }
             break;
+        case Unknown.BED_SLOPE:
+            if (solveForBedSlope)
+            {
+                return true;
+            }
+            break;
         default:
             break;
         }
@@ -104,9 +110,6 @@ class CircularOpenChannel : OpenChannel
     /// Solve for the unknown discharge.
     private bool solveForDischarge()
     {
-        float theta;
-        float aTri; // Area of central triangle
-        float aSec; // Area of sector
         if (isValidInputs(isValidDiameter(Unknown.DISCHARGE), isValidBedSlope(Unknown.DISCHARGE),
                 isValidWaterDepth(Unknown.DISCHARGE), isValidManning))
         {
@@ -167,10 +170,7 @@ class CircularOpenChannel : OpenChannel
                     return false;
                 }
 
-                hydraulicRadius = wettedArea / wettedPerimeter;
-                averageVelocity = (1.0 / manningRoughness) * sqrt(bedSlope) * pow(hydraulicRadius,
-                        (2.0 / 3));
-                trialDischarge = averageVelocity * wettedArea;
+                calculateTrialDischarge();
 
                 /+
                 + My root finding algorithm
@@ -188,6 +188,43 @@ class CircularOpenChannel : OpenChannel
                 /+
                 + End of root finding algorithm
                 +/
+            }
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    /// Solve for the unknown bed slope
+    private bool solveForBedSlope()
+    {
+        if (isValidInputs(isValidDiameter(Unknown.BED_SLOPE), isValidWaterDepth(Unknown.BED_SLOPE),
+                isValidDischarge(Unknown.BED_SLOPE), isValidManning))
+        {
+            bedSlope = increment;
+
+            const allowedDiff = discharge * ERROR;
+
+            // Start of trial and error
+            while (trialDischarge < discharge)
+            {
+                bedSlope += increment;
+                writeln(bedSlope);
+
+                calculateWettedProperties();
+
+                // Check if wetted perimeter is zero.
+                // Cancel the calculation is so, which will yield infinity in calculation
+                // of hydraulic radius, R.
+                if (wettedPerimeter == 0.0)
+                {
+                    errorMessage = "Perimeter shall be non-zero positive result. Please check your dimensions";
+                    return false;
+                }
+
+                calculateTrialDischarge();
             }
             return true;
         }
@@ -256,5 +293,12 @@ class CircularOpenChannel : OpenChannel
             wettedArea = aSec - aTri;
             wettedPerimeter = PI * diameter * theta / 360;
         }
+    }
+
+    private void calculateTrialDischarge()
+    {
+        hydraulicRadius = wettedArea / wettedPerimeter;
+        averageVelocity = (1.0 / manningRoughness) * sqrt(bedSlope) * pow(hydraulicRadius, (2.0 / 3));
+        trialDischarge = averageVelocity * wettedArea;
     }
 }
