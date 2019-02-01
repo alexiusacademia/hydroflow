@@ -1,4 +1,4 @@
-module libs.openchannel_trapezoidal;
+module libs.trapezoidal_open_channel;
 
 /// Standard modules
 import std.math;

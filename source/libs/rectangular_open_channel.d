@@ -1,4 +1,4 @@
-module libs.openchannel_rectangular;
+module libs.rectangular_open_channel;
 
 /// Standard modules
 import std.math;

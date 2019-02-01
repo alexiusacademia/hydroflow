@@ -1,4 +1,4 @@
-module libs.openchannel_circular;
+module libs.circular_open_channel;
 
 /// Standard modules
 import std.math;

@@ -1,5 +1,8 @@
 module hydroflow;
 
-public import libs.openchannel_rectangular;
-public import libs.openchannel_trapezoidal;
-public import libs.openchannel_circular;
+public {
+    import libs.irregular_section_open_channel;
+    import libs.rectangular_open_channel;
+    import libs.trapezoidal_open_channel;
+    import libs.circular_open_channel;
+}
