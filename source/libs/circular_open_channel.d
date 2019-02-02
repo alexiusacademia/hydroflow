@@ -12,7 +12,7 @@ class CircularOpenChannel : OpenChannel
     /+++++++++++++++++++++++++++++++++++++++++++++++
     +                 Properties                   +
     +++++++++++++++++++++++++++++++++++++++++++++++/
-    /// Sideslope
+    /// Diameter
     double diameter;
 
     /* Calculated properties */
