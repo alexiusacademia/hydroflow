@@ -23,9 +23,33 @@ class IrregularSectionOpenChannel : OpenChannel
     this()
     {
         unknown = Unknown.DISCHARGE;
-        points = new Point[];
-        newPoints = new Point[];
     }
 
+    /+++++++++++++++++++++++++++++++++++++++++++++++ 
+    +                  Setters                     +
+    +++++++++++++++++++++++++++++++++++++++++++++++/
+    void setPoints(Point[] pts)
+    {
+        points = pts;
+    }
 
+    /+++++++++++++++++++++++++++++++++++++++++++++++ 
+    +                  Getters                     +
+    +++++++++++++++++++++++++++++++++++++++++++++++/
+    /** Returns the list of points */
+    Point[] getPoints()
+    {
+        return points;
+    }
+
+    /+++++++++++++++++++++++++++++++++++++++++++++++
+    +                   Methods                    +
+    +++++++++++++++++++++++++++++++++++++++++++++++/
+    /** Add a single point */
+    void addPoint(Point p)
+    {   
+        ulong lastIndex = points.length;
+        points.length = points.length + 1;
+        points[lastIndex] = p;
+    }
 }
