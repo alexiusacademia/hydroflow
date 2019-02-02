@@ -6,4 +6,9 @@ module libs.utils.point;
 class Point 
 {
     double x, y;
+
+    this(float a, float b) {
+        x = a;
+        y = b;
+    }
 }
