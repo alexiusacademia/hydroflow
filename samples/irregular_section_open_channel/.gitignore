@@ -1,0 +1,14 @@
+.dub
+docs.json
+__dummy.html
+docs/
+irregular_section_open_channel.so
+irregular_section_open_channel.dylib
+irregular_section_open_channel.dll
+irregular_section_open_channel.a
+irregular_section_open_channel.lib
+irregular_section_open_channel-test-*
+*.exe
+*.o
+*.obj
+*.lst

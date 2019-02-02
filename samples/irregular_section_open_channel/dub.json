@@ -1,0 +1,14 @@
+{
+	"description": "Implementation of Irregular Section open channel",
+	"dependencies": {
+		"hydroflow": {
+			"path" : "../../"
+		}
+	},
+	"authors": [
+		"Alexius Academia"
+	],
+	"copyright": "Copyright © 2019, Alexius Academia",
+	"license": "Boost",
+	"name": "irregular_section_open_channel"
+}
