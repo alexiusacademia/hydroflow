@@ -81,7 +81,7 @@ class IrregularSectionOpenChannel : OpenChannel
     /+++++++++++++++++++++++++++++++++++++++++++++++
     +                   Methods                    +
     +++++++++++++++++++++++++++++++++++++++++++++++/
-    /** Add a single point */
+    /// Add a single point
     void addPoint(Point p)
     {
         ulong lastIndex = points.length;
@@ -89,4 +89,54 @@ class IrregularSectionOpenChannel : OpenChannel
         points[lastIndex] = p;
     }
 
+    /// Solution summary.
+    /// To be called in the application API
+    bool solve()
+    {
+        switch(unknown)
+        {
+            case Unknown.DISCHARGE:
+                if (solveForDischarge) return true;
+                break;
+            default:
+                break;
+        }
+        return false;
+    }
+
+    /// Solve for the unknown discharge
+    private bool solveForDischarge()
+    {
+        if (isValidInputs(isValidBedSlope(Unknown.DISCHARGE)))
+        {
+            // Number of intersections
+            int leftIntersection, rightIntersection;
+
+            // Remove points above the intersection points
+            float x1, y1, x2, y2;
+
+            // Temp variable for y
+            float y;
+
+            int i;  // Iterator
+
+            foreach(Point p ; points)
+            {
+                i++;
+
+                // Get the ordinate of the current point
+                y = p.y;
+
+                // Find the intersection at the ledt bank
+                if (leftIntersection == 0)
+                {
+
+                }
+            }
+            
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
