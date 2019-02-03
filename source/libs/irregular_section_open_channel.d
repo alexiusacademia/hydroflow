@@ -146,6 +146,23 @@ class IrregularSectionOpenChannel : OpenChannel
                         newPoints[cast(int)newPoints.length - 1] = new Point(x3, waterElevation);
                     }
                 }
+
+                // Find the intersection at the right bank
+                if (rightIntersection == 0)
+                {
+                    if (y >= waterElevation && i > 0)
+                    {
+                        rightIntersection++;
+                        // Solve for the intersection point
+                        x1 = points[i - 1].x;
+                        y1 = points[i - 1].y;
+                        x2 = points.get[i].x;
+                        y2 = points[i].y;
+                        x3 = (waterElevation - y1) * (x2 - x1) / (y2 - y1) + x1;
+                        newPoints.length = newPoints.length + 1;
+                        newPoints[cast(int)newPoints.length - 1] = new Point(x3, waterElevation);
+                    }
+                }
             }
 
             return true;
