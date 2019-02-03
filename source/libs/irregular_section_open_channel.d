@@ -156,18 +156,49 @@ class IrregularSectionOpenChannel : OpenChannel
                         // Solve for the intersection point
                         x1 = points[i - 1].x;
                         y1 = points[i - 1].y;
-                        x2 = points.get[i].x;
+                        x2 = points[i].x;
                         y2 = points[i].y;
                         x3 = (waterElevation - y1) * (x2 - x1) / (y2 - y1) + x1;
                         newPoints.length = newPoints.length + 1;
                         newPoints[cast(int)newPoints.length - 1] = new Point(x3, waterElevation);
                     }
                 }
+
+                if (leftIntersection == 1)
+                {
+                    if (rightIntersection == 0)
+                    {
+                        newPoints.length = newPoints.length + 1;
+                        newPoints[cast(int)newPoints.length - 1] = points[i];
+                    }
+                }
             }
+
+
 
             return true;
         } else {
             return false;
         }
+    }
+
+    private double polygonArea(Point[] pts)
+    {
+        // Number of vertices of the polygon
+        const n = cast(int)pts.length;
+
+        // Initialize area
+        double area = 0;
+        int j;
+
+        for (int k = 0; k < n; k++) {
+            j = (k + 1) % n;
+            area += pts[k].x * pts[j].y;
+            area -= pts[j].x * pts[k].y;
+        }
+
+        area = abs(area) / 2;
+
+        return area;
     }
 }
