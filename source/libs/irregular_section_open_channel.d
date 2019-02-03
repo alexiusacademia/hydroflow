@@ -18,6 +18,7 @@ class IrregularSectionOpenChannel : OpenChannel
     private float maxWaterElevation;
     private float waterElevation;
     private double trialDischarge;
+    private int i;  // Iterator
 
     /+++++++++++++++++++++++++++++++++++++++++++++++ 
     +                  Setters                     +
@@ -113,12 +114,14 @@ class IrregularSectionOpenChannel : OpenChannel
             int leftIntersection, rightIntersection;
 
             // Remove points above the intersection points
-            float x1, y1, x2, y2;
+            float x1, y1, x2, y2, x3;
 
             // Temp variable for y
             float y;
 
-            int i;  // Iterator
+            i = 0;
+
+            newPoints = null;
 
             foreach(Point p ; points)
             {
@@ -130,10 +133,21 @@ class IrregularSectionOpenChannel : OpenChannel
                 // Find the intersection at the ledt bank
                 if (leftIntersection == 0)
                 {
-
+                    if (y <= waterElevation && i > 0)
+                    {
+                        leftIntersection++;
+                        // Solve for intersection point using interpolation
+                        x1 = points[i-1].x;
+                        y1 = points[i-1].y;
+                        x2 = points[i].x;
+                        y2 = points[i].y;
+                        x3 = (waterElevation - y1) * (x2 - x1) / (y2 - y1) + x1;
+                        newPoints.length = newPoints.length + 1;
+                        newPoints[cast(int)newPoints.length - 1] = new Point(x3, waterElevation);
+                    }
                 }
             }
-            
+
             return true;
         } else {
             return false;
