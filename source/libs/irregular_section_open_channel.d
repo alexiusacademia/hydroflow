@@ -85,7 +85,7 @@ class IrregularSectionOpenChannel : OpenChannel
     /// Add a single point
     void addPoint(Point p)
     {
-        ulong lastIndex = points.length;
+        int lastIndex = cast(int)points.length;
         points.length = points.length + 1;
         points[lastIndex] = p;
     }
@@ -201,4 +201,35 @@ class IrregularSectionOpenChannel : OpenChannel
 
         return area;
     }
+
+    /// Calculates the total perimeter of a given polygon
+    private double polygonPerimeter(Point[] pts)
+    {
+        // Initialize perimeter
+        double perimeter = 0;
+
+        // Number of vertices of the polygon
+        int n = pts.length;
+
+        Point p1, p2;
+
+        for (int k = 0; i < (n-1); i++) {
+            p1 = pts[k];
+            p2 = pts[k + 1];
+            perimeter += distanceBetweenTwoPoints(p1, p2);
+        }
+
+        return perimeter;
+    }
+
+    /// Implementation of distance between 2 points.
+    private double distanceBetweenTwoPoints(Point p1, Point p2) {
+        float x1, y1, x2, y2;
+        x1 = p1.x;
+        y1 = p1.y;
+        x2 = p2.x;
+        y2 = p2.y;
+        return sqrt(pow((y2 - y1), 2) + pow((x2 - x1), 2));
+    }
+
 }
