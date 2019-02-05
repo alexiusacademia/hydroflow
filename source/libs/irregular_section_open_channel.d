@@ -175,6 +175,15 @@ class IrregularSectionOpenChannel : OpenChannel
                 }
             }
 
+            // Hydraulic elements
+                wettedArea = polygonArea(newPoints);
+                wettedPerimeter = polygonPerimeter(newPoints);
+                hydraulicRadius = wettedArea / wettedPerimeter;
+                
+                averageVelocity = (1.0 / manningRoughness) * sqrt(bedSlope) * pow(hydraulicRadius,
+                    (2.0 / 3));
+                discharge = averageVelocity * wettedArea;
+
             return true;
         }
         else
