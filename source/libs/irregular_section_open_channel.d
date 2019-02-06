@@ -112,13 +112,12 @@ class IrregularSectionOpenChannel : OpenChannel
         if (isValidInputs(isValidBedSlope(Unknown.DISCHARGE)))
         {
             // Number of intersections
-            int leftIntersection, rightIntersection;
+            int leftIntersection = 0, rightIntersection = 0;
 
             // Remove points above the intersection points
             float x1, y1, x2, y2, x3;
 
-            // Temp variable for y
-            float y;
+            Point tempPoint;
 
             i = 0;
 
@@ -126,32 +125,35 @@ class IrregularSectionOpenChannel : OpenChannel
 
             foreach (Point p; points)
             {
+                tempPoint = null;
                 i++;
 
-                // Get the ordinate of the current point
-                y = p.y;
+                tempPoint = p;
 
-                // Find the intersection at the ledt bank
+                // Find the intersection at the left bank
                 if (leftIntersection == 0)
                 {
-                    if (y <= waterElevation && i > 0)
+                    if (p.y <= waterElevation && i > 0)
                     {
-                        leftIntersection++;
+                        leftIntersection += 1;
                         // Solve for intersection point using interpolation
                         x1 = points[i - 1].x;
                         y1 = points[i - 1].y;
-                        x2 = points[i].x;
-                        y2 = points[i].y;
+                        x2 = p.x;
+                        y2 = p.y;
                         x3 = (waterElevation - y1) * (x2 - x1) / (y2 - y1) + x1;
-                        newPoints.length = newPoints.length + 1;
-                        newPoints[cast(int) newPoints.length - 1] = new Point(x3, waterElevation);
+                        // newPoints.length = newPoints.length + 1;
+                        // newPoints[cast(int) newPoints.length - 1] = new Point(x3, waterElevation);
+                        tempPoint = new Point(x3, waterElevation);
+                        writeln("x1 = ", x1, "\ny2 = ", y2, "\ny1 = ", y1);
+                        writeln("Left int: ", x3, ", ", waterElevation);
                     }
                 }
 
                 // Find the intersection at the right bank
                 if (rightIntersection == 0)
                 {
-                    if (y >= waterElevation && i > 0)
+                    if (p.y >= waterElevation && i > 0)
                     {
                         rightIntersection++;
                         // Solve for the intersection point
@@ -160,11 +162,13 @@ class IrregularSectionOpenChannel : OpenChannel
                         x2 = points[i].x;
                         y2 = points[i].y;
                         x3 = (waterElevation - y1) * (x2 - x1) / (y2 - y1) + x1;
-                        newPoints.length = newPoints.length + 1;
-                        newPoints[cast(int) newPoints.length - 1] = new Point(x3, waterElevation);
+                        // newPoints.length = newPoints.length + 1;
+                        // newPoints[cast(int) newPoints.length - 1] = new Point(x3, waterElevation);
+                        tempPoint = new Point(x3, waterElevation);
+                        writeln("Right int: ", x3, ", ", waterElevation);
                     }
                 }
-
+                /*
                 if (leftIntersection == 1)
                 {
                     if (rightIntersection == 0)
@@ -173,16 +177,23 @@ class IrregularSectionOpenChannel : OpenChannel
                         newPoints[cast(int) newPoints.length - 1] = points[i];
                     }
                 }
+                */
+
+                if (tempPoint !is null)
+                {
+                    newPoints.length = newPoints.length + 1;
+                    newPoints[cast(int) newPoints.length - 1] = tempPoint;
+                }
             }
 
             // Hydraulic elements
-                wettedArea = polygonArea(newPoints);
-                wettedPerimeter = polygonPerimeter(newPoints);
-                hydraulicRadius = wettedArea / wettedPerimeter;
-                
-                averageVelocity = (1.0 / manningRoughness) * sqrt(bedSlope) * pow(hydraulicRadius,
+            wettedArea = polygonArea(newPoints);
+            wettedPerimeter = polygonPerimeter(newPoints);
+            hydraulicRadius = wettedArea / wettedPerimeter;
+
+            averageVelocity = (1.0 / manningRoughness) * sqrt(bedSlope) * pow(hydraulicRadius,
                     (2.0 / 3));
-                discharge = averageVelocity * wettedArea;
+            discharge = averageVelocity * wettedArea;
 
             return true;
         }
@@ -253,13 +264,13 @@ class IrregularSectionOpenChannel : OpenChannel
         float[] elevations;
         float lowest = points[0].y;
 
-        foreach (Point p ; points)
+        foreach (Point p; points)
         {
             elevations.length = elevations.length + 1;
-            elevations[cast(int)elevations.length - 1] = p.y;
+            elevations[cast(int) elevations.length - 1] = p.y;
         }
 
-        foreach(float el ; elevations)
+        foreach (float el; elevations)
         {
             if (lowest > el)
             {

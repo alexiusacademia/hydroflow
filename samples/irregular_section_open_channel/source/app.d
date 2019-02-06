@@ -15,9 +15,15 @@ void main()
 
 	isc.setManningRoughness = 0.015;
 	isc.setBedSlope = 0.001;
+	isc.setWaterElevation =  -0.2;
 
 	if (isc.solve)
 	{
+		/* foreach (Point p; isc.getNewPoints)
+		{
+			writeln("(", p.x, ", ", p.y, ")");
+		} */
+
 		writeln("Discharge: ", isc.getDischarge);
 	} else  {
 		writeln(isc.errorMessage);
