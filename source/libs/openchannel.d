@@ -12,11 +12,8 @@ class OpenChannel
     /** ****************************************
     * Constants
     ***************************************** */
-    const double GRAVITY_METRIC = 9.81;
-    // const double DEPTH_TRIAL_INCREMENT = 0.00001;
-    // const double SLOPE_TRIAL_INCREMENT = 0.0000001;
-    // const TRIAL_INCREMENT = 0.00001;
-    const ERROR = 0.0001;            // Trial error max to 1%
+    protected const double GRAVITY_METRIC = 9.81;
+    protected const ERROR = 0.0001;            // Trial error max to 1%
 
     /** ****************************************
     * Properties
@@ -32,7 +29,7 @@ class OpenChannel
         SUPERCRITICAL
     }
 
-    /// Unknowns
+    /// General available unknowns for open channel.
     public enum Unknown
     {
         DISCHARGE,
@@ -45,22 +42,32 @@ class OpenChannel
     /// Discharge / Flow Rate
     protected double discharge;
 
+    /// Rise over run of the channel.
     protected double bedSlope;
 
+    /// Depth of water measured from the deepest point of the
+    /// channel.
     protected double waterDepth;
 
+    /// Manning's roughness coefficient.
     protected float manningRoughness;
 
+    /// Total length of the channel section covered with water.
     protected double wettedPerimeter;
 
+    /// Total area of the channel section covered with water.
     protected double wettedArea;
 
+    /// wettedArea / wettedPerimeter
     protected double hydraulicRadius;
 
+    /// Average velocity over the whole cross section of the channel.
     protected double averageVelocity;
 
+    /// Froude number.
     protected float froudeNumber;
 
+    /// Enum type. (e.g. DISCHARGE, WATER_DEPTH, etc.)
     protected Unknown unknown;
 
     protected FlowType flowType;
