@@ -66,6 +66,11 @@ class IrregularSectionOpenChannel : OpenChannel
         return waterElevation;
     }
 
+    Unknown[] getAvailableUnknowns()
+    {
+        return availableUnknowns;
+    }
+
     /+++++++++++++++++++++++++++++++++++++++++++++++ 
     +                Constructors                  +
     +++++++++++++++++++++++++++++++++++++++++++++++/
@@ -75,9 +80,19 @@ class IrregularSectionOpenChannel : OpenChannel
         unknown = Unknown.DISCHARGE;
     }
 
+    /// Constructor specifying the unknown.
     this(Unknown u)
     {
-        unknown = u;
+        if (canFind(availableUnknowns, u))
+        {
+            unknown = u;
+        }
+        else
+        {
+            writeln("The specified unknown is not included in the available unknowns.");
+            errorMessage = "The specified unknown is not included in the available unknowns.";
+            unknown = Unknown.DISCHARGE;
+        }
     }
 
     /+++++++++++++++++++++++++++++++++++++++++++++++

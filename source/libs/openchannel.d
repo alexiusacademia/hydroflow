@@ -1,6 +1,7 @@
 module libs.openchannel;
 
 import std.math;
+import std.algorithm;
 
 /++
     Open Channel
@@ -76,6 +77,7 @@ class OpenChannel
     protected double dischargeIntensity;
     protected double criticalDepth;
     protected double criticalSlope;
+    protected Unknown[] availableUnknowns = [Unknown.DISCHARGE];
 
     protected bool isCalculationSuccess;
     public string errorMessage;
@@ -198,7 +200,15 @@ class OpenChannel
     }
 
     public void setUnknown(Unknown u) {
-        this.unknown = u;
+        if (canFind(availableUnknowns, u))
+        {
+            unknown = u;
+        }
+        else
+        {
+            errorMessage = "The specified unknown is not included in the available unknowns.";
+            unknown = Unknown.DISCHARGE;
+        }
     }
 
     /+++++++++++++++++++++++++++++++++++++++++++++++
