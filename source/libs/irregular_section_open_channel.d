@@ -21,6 +21,8 @@ class IrregularSectionOpenChannel : OpenChannel
     private float waterElevation;
     private double trialDischarge;
 
+    Unknown[] availableUnknowns = [Unknown.DISCHARGE];
+
     /+++++++++++++++++++++++++++++++++++++++++++++++ 
     +                  Setters                     +
     +++++++++++++++++++++++++++++++++++++++++++++++/

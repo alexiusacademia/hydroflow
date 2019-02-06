@@ -29,6 +29,11 @@ class CircularOpenChannel : OpenChannel
     // Initial increment for trial and error
     private double increment;
 
+    private Unknown[] availableUnknowns = [Unknown.DISCHARGE,
+                        Unknown.WATER_DEPTH,
+                        Unknown.BED_SLOPE,
+                        Unknown.PIPE_DIAMETER];
+
     /+++++++++++++++++++++++++++++++++++++++++++++++
     +                Constructors                  +
     +++++++++++++++++++++++++++++++++++++++++++++++/
