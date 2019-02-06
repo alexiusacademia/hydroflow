@@ -3,6 +3,7 @@ module libs.irregular_section_open_channel;
 /// Standard modules
 import std.math;
 import std.stdio;
+import std.algorithm;
 
 // Custom modules
 import libs.openchannel;
@@ -94,6 +95,9 @@ class IrregularSectionOpenChannel : OpenChannel
     /// To be called in the application API
     bool solve()
     {
+        newPoints = null; // Reset newPoints array
+        newPoints.length = 1; // Set length to 1 to give room for the first element of points array
+
         switch (unknown)
         {
         case Unknown.DISCHARGE:
@@ -114,75 +118,62 @@ class IrregularSectionOpenChannel : OpenChannel
             // Number of intersections
             int leftIntersection = 0, rightIntersection = 0;
 
-            // Remove points above the intersection points
             float x1, y1, x2, y2, x3;
 
-            Point tempPoint;
+            // Collect all points including original ones
+            // and the intersection between section and waterElevation.
 
-            i = 0;
+            newPoints[0] = points[0];
 
-            newPoints = null;
-
-            foreach (Point p; points)
+            for (int i = 1; i < points.length; i++)
             {
-                tempPoint = null;
-                i++;
-
-                tempPoint = p;
-
-                // Find the intersection at the left bank
+                // Look for the intersection at the left side of the channel
                 if (leftIntersection == 0)
                 {
-                    if (p.y <= waterElevation && i > 0)
+                    if (points[i].y <= waterElevation && i > 0)
                     {
-                        leftIntersection += 1;
-                        // Solve for intersection point using interpolation
-                        x1 = points[i - 1].x;
-                        y1 = points[i - 1].y;
-                        x2 = p.x;
-                        y2 = p.y;
-                        x3 = (waterElevation - y1) * (x2 - x1) / (y2 - y1) + x1;
-                        // newPoints.length = newPoints.length + 1;
-                        // newPoints[cast(int) newPoints.length - 1] = new Point(x3, waterElevation);
-                        tempPoint = new Point(x3, waterElevation);
-                        writeln("x1 = ", x1, "\ny2 = ", y2, "\ny1 = ", y1);
-                        writeln("Left int: ", x3, ", ", waterElevation);
-                    }
-                }
-
-                // Find the intersection at the right bank
-                if (rightIntersection == 0)
-                {
-                    if (p.y >= waterElevation && i > 0)
-                    {
-                        rightIntersection++;
-                        // Solve for the intersection point
+                        leftIntersection++;
+                        // Solve for the intersection point using interpolation
                         x1 = points[i - 1].x;
                         y1 = points[i - 1].y;
                         x2 = points[i].x;
                         y2 = points[i].y;
                         x3 = (waterElevation - y1) * (x2 - x1) / (y2 - y1) + x1;
-                        // newPoints.length = newPoints.length + 1;
-                        // newPoints[cast(int) newPoints.length - 1] = new Point(x3, waterElevation);
-                        tempPoint = new Point(x3, waterElevation);
-                        writeln("Right int: ", x3, ", ", waterElevation);
-                    }
-                }
-                /*
-                if (leftIntersection == 1)
-                {
-                    if (rightIntersection == 0)
-                    {
                         newPoints.length = newPoints.length + 1;
-                        newPoints[cast(int) newPoints.length - 1] = points[i];
+                        newPoints[cast(int) newPoints.length - 1] = new Point(x3,
+                                this.waterElevation);
                     }
                 }
-                */
 
-                if (tempPoint !is null)
+                // Get the water intersection at right bank
+                if (rightIntersection == 0)
                 {
-                    newPoints.length = newPoints.length + 1;
-                    newPoints[cast(int) newPoints.length - 1] = tempPoint;
+                    if (points[i].y >= waterElevation && i > 0)
+                    {
+                        rightIntersection++;
+                        // Solve for the intersection point using interpolation
+                        x1 = points[i - 1].x;
+                        y1 = points[i - 1].y;
+                        x2 = points[i].x;
+                        y2 = points[i].y;
+                        x3 = (waterElevation - y1) * (x2 - x1) / (y2 - y1) + x1;
+                        newPoints.length = newPoints.length + 1;
+                        newPoints[cast(int) newPoints.length - 1] = new Point(x3,
+                                this.waterElevation);
+                    }
+                }
+
+                newPoints.length = newPoints.length + 1;
+                newPoints[cast(int) newPoints.length - 1] = points[i];
+            }
+
+            // Now, remove all points above waterElevation
+            for (int i = 0; i < newPoints.length; i++)
+            {
+                if (newPoints[i].y > waterElevation)
+                {
+                    // Using remove from std.algorithm
+                    newPoints = newPoints.remove(i);
                 }
             }
 
@@ -196,11 +187,10 @@ class IrregularSectionOpenChannel : OpenChannel
             discharge = averageVelocity * wettedArea;
 
             return true;
+
         }
-        else
-        {
-            return false;
-        }
+
+        return false;
     }
 
     /// Calculates the area of given polygon
