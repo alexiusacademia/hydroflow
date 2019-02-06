@@ -8,10 +8,10 @@ A D-library for hydraulics calculations. This library was created to aide civil 
 
 #### TODO's
 
-[x] Open Channel
+- [x] Open Channel
 
-[ ] Simple Weirs
+- [ ] Simple Weirs
 
-[ ] Diversion Dam Analysis
+- [ ] Diversion Dam Analysis
 
-[ ] Reservoir construction and operation studies
+- [ ] Reservoir construction and operation studies
