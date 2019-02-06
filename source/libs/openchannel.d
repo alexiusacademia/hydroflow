@@ -43,25 +43,25 @@ class OpenChannel
     }
 
     /// Discharge / Flow Rate
-    double discharge;
+    protected double discharge;
 
-    double bedSlope;
+    protected double bedSlope;
 
-    double waterDepth;
+    protected double waterDepth;
 
-    float manningRoughness;
+    protected float manningRoughness;
 
-    double wettedPerimeter;
+    protected double wettedPerimeter;
 
-    double wettedArea;
+    protected double wettedArea;
 
-    double hydraulicRadius;
+    protected double hydraulicRadius;
 
-    double averageVelocity;
+    protected double averageVelocity;
 
-    float froudeNumber;
+    protected float froudeNumber;
 
-    Unknown unknown;
+    protected Unknown unknown;
 
     protected FlowType flowType;
 
@@ -76,12 +76,14 @@ class OpenChannel
     /+++++++++++++++++++++++++++++++++++++++++++++++ 
     +                  Getters                     +
     +++++++++++++++++++++++++++++++++++++++++++++++/
-
+    
+    /** Returns the rate of flow. */
     public double getDischarge()
     {
         return discharge;
     }
 
+    /** Returns the average velocity in the channel. */
     public double getAverageVelocity()
     {
         return averageVelocity;
