@@ -8,6 +8,7 @@ import std.algorithm;
 // Custom modules
 import libs.openchannel;
 import libs.utils.point;
+import libs.utils.geometry_calculators;
 
 class IrregularSectionOpenChannel : OpenChannel
 {
@@ -19,7 +20,6 @@ class IrregularSectionOpenChannel : OpenChannel
     private float maxWaterElevation;
     private float waterElevation;
     private double trialDischarge;
-    private int i; // Iterator
 
     /+++++++++++++++++++++++++++++++++++++++++++++++ 
     +                  Setters                     +
@@ -193,73 +193,20 @@ class IrregularSectionOpenChannel : OpenChannel
         return false;
     }
 
-    /// Calculates the area of given polygon
-    /// using the Shoelace formula.
-    private double polygonArea(Point[] pts)
-    {
-        // Number of vertices of the polygon
-        const n = cast(int) pts.length;
-
-        // Initialize area
-        double area = 0;
-        int j;
-
-        for (int k = 0; k < n; k++)
-        {
-            j = (k + 1) % n;
-            area += pts[k].x * pts[j].y;
-            area -= pts[j].x * pts[k].y;
-        }
-
-        area = abs(area) / 2;
-
-        return area;
-    }
-
-    /// Calculates the total perimeter of a given polygon
-    private double polygonPerimeter(Point[] pts)
-    {
-        // Initialize perimeter
-        double perimeter = 0;
-
-        // Number of vertices of the polygon
-        int n = cast(int) pts.length;
-
-        Point p1, p2;
-
-        for (int k = 0; i < (n - 1); i++)
-        {
-            p1 = pts[k];
-            p2 = pts[k + 1];
-            perimeter += distanceBetweenTwoPoints(p1, p2);
-        }
-
-        return perimeter;
-    }
-
-    /// Implementation of distance between 2 points.
-    private double distanceBetweenTwoPoints(Point p1, Point p2)
-    {
-        float x1, y1, x2, y2;
-        x1 = p1.x;
-        y1 = p1.y;
-        x2 = p2.x;
-        y2 = p2.y;
-        return sqrt(pow((y2 - y1), 2) + pow((x2 - x1), 2));
-    }
-
     /// Finds the elevation of the lowest point from the cross section.
     private float calculateLowestElevation()
     {
         float[] elevations;
         float lowest = points[0].y;
 
+        // Collect all elevations
         foreach (Point p; points)
         {
             elevations.length = elevations.length + 1;
             elevations[cast(int) elevations.length - 1] = p.y;
         }
 
+        // Compare each elevation
         foreach (float el; elevations)
         {
             if (lowest > el)

@@ -5,5 +5,6 @@
 		"Alexius Academia"
 	],
 	"copyright": "Copyright © 2019, Alexius Academia",
-	"name": "hydroflow"
+	"name": "hydroflow",
+	"targetType": "library"
 }

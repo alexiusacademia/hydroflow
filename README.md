@@ -6,7 +6,7 @@ A D-library for hydraulics calculations. This library was created to aide civil 
 
 
 
-#### TODO's
+#### Major Features
 
 - [x] Open Channel
 
