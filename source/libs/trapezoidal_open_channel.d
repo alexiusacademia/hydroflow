@@ -3,6 +3,7 @@ module libs.trapezoidal_open_channel;
 /// Standard modules
 import std.math;
 import std.stdio;
+import std.algorithm;
 
 // Custom modules
 import libs.openchannel;
@@ -20,6 +21,10 @@ class TrapezoidalOpenChannel : OpenChannel
 
     /// Calculated properties
     double wettedArea, wettedPerimeter;
+
+    private Unknown[] availableUnknowns = [
+        Unknown.DISCHARGE, Unknown.WATER_DEPTH, Unknown.BED_SLOPE, Unknown.BASE_WIDTH
+    ];
 
     /+++++++++++++++++++++++++++++++++++++++++++++++
     +                Constructors                  +
@@ -64,6 +69,12 @@ class TrapezoidalOpenChannel : OpenChannel
     /// To be called in the application API
     bool solve()
     {
+        if (!canFind(availableUnknowns, unknown))
+        {
+            errorMessage = "The specified unknown is not included in the available unknowns.";
+            return false;
+        }
+
         switch (this.unknown)
         {
         case Unknown.DISCHARGE:
@@ -101,7 +112,8 @@ class TrapezoidalOpenChannel : OpenChannel
     private bool solveForDischarge()
     {
         if (isValidInputs(isValidBaseWidth(Unknown.DISCHARGE), isValidBedSlope(Unknown.DISCHARGE),
-                isValidWaterDepth(Unknown.DISCHARGE), isValidSideslope(Unknown.DISCHARGE), isValidManning))
+                isValidWaterDepth(Unknown.DISCHARGE),
+                isValidSideslope(Unknown.DISCHARGE), isValidManning))
         {
             wettedArea = (baseWidth + waterDepth * sideSlope) * waterDepth;
             wettedPerimeter = 2 * waterDepth * sqrt(pow(sideSlope, 2) + 1) + baseWidth;
@@ -132,7 +144,8 @@ class TrapezoidalOpenChannel : OpenChannel
     private bool solveForWaterDepth()
     {
         if (isValidInputs(isValidBaseWidth(Unknown.WATER_DEPTH), isValidBedSlope(Unknown.WATER_DEPTH),
-                isValidDischarge(Unknown.WATER_DEPTH), isValidSideslope(Unknown.WATER_DEPTH), isValidManning))
+                isValidDischarge(Unknown.WATER_DEPTH),
+                isValidSideslope(Unknown.WATER_DEPTH), isValidManning))
         {
 
             double trialDischarge = 0, increment = 0.0001;
@@ -190,7 +203,8 @@ class TrapezoidalOpenChannel : OpenChannel
     private bool solveForBaseWidth()
     {
         if (isValidInputs(isValidWaterDepth(Unknown.BASE_WIDTH), isValidBedSlope(Unknown.BASE_WIDTH),
-                isValidDischarge(Unknown.BASE_WIDTH), isValidSideslope(Unknown.BASE_WIDTH), isValidManning))
+                isValidDischarge(Unknown.BASE_WIDTH),
+                isValidSideslope(Unknown.BASE_WIDTH), isValidManning))
         {
 
             double trialDischarge = 0, increment = 0.0001;
@@ -248,7 +262,8 @@ class TrapezoidalOpenChannel : OpenChannel
     private bool solveForBedSlope()
     {
         if (isValidInputs(isValidWaterDepth(Unknown.BED_SLOPE), isValidBaseWidth(Unknown.BED_SLOPE),
-                isValidDischarge(Unknown.BED_SLOPE), isValidSideslope(Unknown.BED_SLOPE), isValidManning))
+                isValidDischarge(Unknown.BED_SLOPE),
+                isValidSideslope(Unknown.BED_SLOPE), isValidManning))
         {
 
             double trialDischarge = 0, increment = 0.0000001;
@@ -327,12 +342,14 @@ class TrapezoidalOpenChannel : OpenChannel
     /// Sideslope error checking
     private bool isValidSideslope(Unknown u)
     {
-        if (isNaN(sideSlope)) {
+        if (isNaN(sideSlope))
+        {
             errorMessage = "Sideslope must be numeric.";
             return false;
         }
 
-        if (sideSlope < 0) {
+        if (sideSlope < 0)
+        {
             errorMessage = "Sideslope must be greater than zero.";
             return false;
         }
