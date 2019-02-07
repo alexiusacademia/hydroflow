@@ -32,8 +32,7 @@ class CircularOpenChannel : OpenChannel
 
     private Unknown[] availableUnknowns = [Unknown.DISCHARGE,
                         Unknown.WATER_DEPTH,
-                        Unknown.BED_SLOPE,
-                        Unknown.PIPE_DIAMETER];
+                        Unknown.BED_SLOPE];
 
     /+++++++++++++++++++++++++++++++++++++++++++++++
     +                Constructors                  +
@@ -47,15 +46,7 @@ class CircularOpenChannel : OpenChannel
     /// Initialize the RectangularOpenChannel with the unknown as given
     this(Unknown u)
     {
-        if (canFind(availableUnknowns, u))
-        {
-            unknown = u;
-        }
-        else
-        {
-            errorMessage = "The specified unknown is not included in the available unknowns.";
-            unknown = Unknown.DISCHARGE;
-        }
+        unknown = u;
     }
 
     /+++++++++++++++++++++++++++++++++++++++++++++++ 
@@ -93,6 +84,12 @@ class CircularOpenChannel : OpenChannel
         // Reset variables
         trialDischarge = 0;
         increment = 0.000001;
+
+        if (!canFind(availableUnknowns, unknown))
+        {
+            errorMessage = "The specified unknown is not included in the available unknowns.";
+            return false;
+        }
 
         switch (this.unknown)
         {

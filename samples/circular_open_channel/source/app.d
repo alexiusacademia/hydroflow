@@ -10,7 +10,7 @@ void main()
 
 	CircularOpenChannel coc = new CircularOpenChannel();
 
-	coc.setUnknown = coc.Unknown.BASE_WIDTH;
+	coc.setUnknown = coc.Unknown.DISCHARGE;
 
 	// Set the given values
 	coc.setBedSlope = 0.001;
@@ -27,7 +27,7 @@ void main()
 
 	if (success)
 	{
-		writeln("Water depth = ", coc.getWaterDepth);
+		writeln("Discharge = ", coc.getDischarge);
 		writeln(coc.errorMessage);
 	}
 	else
