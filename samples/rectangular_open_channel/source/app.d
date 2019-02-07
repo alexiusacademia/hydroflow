@@ -10,7 +10,7 @@ void main()
 
 	RectangularOpenChannel roc = new RectangularOpenChannel();
 
-	roc.setUnknown = roc.Unknown.WATER_DEPTH;
+	roc.setUnknown = roc.Unknown.PIPE_DIAMETER;
 
 	// Set the given values
 	roc.setBedSlope = 0.001;

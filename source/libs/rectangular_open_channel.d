@@ -3,6 +3,7 @@ module libs.rectangular_open_channel;
 /// Standard modules
 import std.math;
 import std.stdio;
+import std.algorithm;
 
 // Custom modules
 import libs.openchannel;
@@ -14,6 +15,10 @@ class RectangularOpenChannel : OpenChannel
   +++++++++++++++++++++++++++++++++++++++++++++++/
   /// Base width or the channel width for rectangular sections.
   double baseWidth;
+
+  private Unknown[] availableUnknowns = [
+    Unknown.DISCHARGE, Unknown.WATER_DEPTH, Unknown.BED_SLOPE, Unknown.BASE_WIDTH
+  ];
 
   /// Calculated properties
   double wettedArea, wettedPerimeter;
@@ -56,6 +61,12 @@ class RectangularOpenChannel : OpenChannel
   /// To be called in the application API
   bool solve()
   {
+    if (!canFind(availableUnknowns, unknown))
+    {
+      errorMessage = "The specified unknown is not included in the available unknowns.";
+      return false;
+    }
+
     switch (this.unknown)
     {
     case Unknown.DISCHARGE:
