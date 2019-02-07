@@ -85,15 +85,7 @@ class IrregularSectionOpenChannel : OpenChannel
     /// Constructor specifying the unknown.
     this(Unknown u)
     {
-        if (canFind(availableUnknowns, u))
-        {
-            unknown = u;
-        }
-        else
-        {
-            errorMessage = "The specified unknown is not included in the available unknowns.";
-            unknown = Unknown.DISCHARGE;
-        }
+        unknown = u;
     }
 
     /+++++++++++++++++++++++++++++++++++++++++++++++
@@ -114,7 +106,7 @@ class IrregularSectionOpenChannel : OpenChannel
         newPoints = null; // Reset newPoints array
         newPoints.length = 1; // Set length to 1 to give room for the first element of points array
 
-        if (!canFind(availableUnknowns, u))
+        if (!canFind(availableUnknowns, unknown))
         {
             errorMessage = "The specified unknown is not included in the available unknowns.";
             return false;

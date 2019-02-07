@@ -6,7 +6,7 @@ void main()
 {
 	IrregularSectionOpenChannel isc = new IrregularSectionOpenChannel();
 	
-	isc.setUnknown = isc.Unknown.DISCHARGE;
+	isc.setUnknown = isc.Unknown.WATER_DEPTH;
 
 	isc.addPoint(new Point(0, 0));
 	isc.addPoint(new Point(0, -1));

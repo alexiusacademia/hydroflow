@@ -3,6 +3,7 @@ module libs.circular_open_channel;
 /// Standard modules
 import std.math;
 import std.stdio;
+import std.algorithm;
 
 // Custom modules
 import libs.openchannel;
@@ -46,7 +47,15 @@ class CircularOpenChannel : OpenChannel
     /// Initialize the RectangularOpenChannel with the unknown as given
     this(Unknown u)
     {
-        this.unknown = u;
+        if (canFind(availableUnknowns, u))
+        {
+            unknown = u;
+        }
+        else
+        {
+            errorMessage = "The specified unknown is not included in the available unknowns.";
+            unknown = Unknown.DISCHARGE;
+        }
     }
 
     /+++++++++++++++++++++++++++++++++++++++++++++++ 

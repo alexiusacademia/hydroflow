@@ -200,15 +200,7 @@ class OpenChannel
     }
 
     public void setUnknown(Unknown u) {
-        if (canFind(availableUnknowns, u))
-        {
-            unknown = u;
-        }
-        else
-        {
-            errorMessage = "The specified unknown is not included in the available unknowns.";
-            unknown = Unknown.DISCHARGE;
-        }
+        unknown = u;
     }
 
     /+++++++++++++++++++++++++++++++++++++++++++++++
