@@ -91,7 +91,6 @@ class IrregularSectionOpenChannel : OpenChannel
         }
         else
         {
-            writeln("The specified unknown is not included in the available unknowns.");
             errorMessage = "The specified unknown is not included in the available unknowns.";
             unknown = Unknown.DISCHARGE;
         }
@@ -114,6 +113,12 @@ class IrregularSectionOpenChannel : OpenChannel
     {
         newPoints = null; // Reset newPoints array
         newPoints.length = 1; // Set length to 1 to give room for the first element of points array
+
+        if (!canFind(availableUnknowns, u))
+        {
+            errorMessage = "The specified unknown is not included in the available unknowns.";
+            return false;
+        }
 
         switch (unknown)
         {
