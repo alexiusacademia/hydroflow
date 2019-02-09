@@ -1,9 +1,8 @@
 module libs.circular_open_channel;
 
 /// Standard modules
-import std.math;
-import std.stdio;
-import std.algorithm;
+import std.math: sqrt, abs, pow, isNaN, PI, sin, acos;
+import std.algorithm: canFind;
 
 // Custom modules
 import libs.openchannel;
@@ -222,7 +221,6 @@ class CircularOpenChannel : OpenChannel
             while (trialDischarge < discharge)
             {
                 bedSlope += increment;
-                writeln(bedSlope);
 
                 calculateWettedProperties();
 

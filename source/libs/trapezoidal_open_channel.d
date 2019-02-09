@@ -1,9 +1,8 @@
 module libs.trapezoidal_open_channel;
 
 /// Standard modules
-import std.math;
-import std.stdio;
-import std.algorithm;
+import std.math: pow, sqrt, pow, isNaN, abs;
+import std.algorithm: canFind;
 
 // Custom modules
 import libs.openchannel;

@@ -1,9 +1,8 @@
 module libs.rectangular_open_channel;
 
 /// Standard modules
-import std.math;
-import std.stdio;
-import std.algorithm;
+import std.math: pow, sqrt, abs, isNaN;
+import std.algorithm: canFind;
 
 // Custom modules
 import libs.openchannel;
