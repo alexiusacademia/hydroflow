@@ -36,9 +36,9 @@ Say we are given a rectangular channel problem and the unknown is the depth of t
 
 | Given                              | Value      |
 | ---------------------------------- | ---------- |
-| Dicharge, Q                        | $1.0  m^3$ |
-| Bed Slope, S                       | $0.001$    |
-| Base Width, b                      | $1.0m$     |
+| Dicharge, Q                        | 1.0  m<sup>3</sup> |
+| Bed Slope, S                       | 0.00 1    |
+| Base Width, b                      | 1.0 m     |
 | Manning's Roughness Coefficient, n | 0.015      |
 
 To solve this, you may refer to the code below:
