@@ -12,38 +12,38 @@ module libs.circular_open_channel;
 import std.math : sqrt, abs, pow, isNaN, PI, sin, acos;
 import std.algorithm : canFind;
 
-// Custom modules
+/// Custom modules
 import libs.openchannel;
 
+/**
+* Subclass of OpenChannel for the calculation and 
+* analysis of circular sections.
+*/
 class CircularOpenChannel : OpenChannel
 {
-    /+++++++++++++++++++++++++++++++++++++++++++++++
-    +                 Properties                   +
-    +++++++++++++++++++++++++++++++++++++++++++++++/
-    /// Diameter
-    double diameter;
-
-    /* Calculated properties */
-    // Wetted properties
-    private double wettedArea, wettedPerimeter;
-    // More than half full
+    //++++++++++++++++++++++++++++++++++++++++++++++
+    //                Properties                   +
+    //+++++++++++++++++++++++++++++++++++++++++++++/
+    /// Pipe diameter
+    protected double diameter;
+    /// More than half full
     private bool almostFull;
-    // Percentage full
+    /// Percentage full
     private double percentFull;
-    // Area of central triangle
+    /// Area of central triangle
     private double triangleArea;
-    // Trial discharge
+    /// Trial discharge
     private double trialDischarge;
-    // Initial increment for trial and error
+    /// Initial increment for trial and error
     private double increment;
-
+    /// Available unknowns for this section.
     private Unknown[] availableUnknowns = [
         Unknown.DISCHARGE, Unknown.WATER_DEPTH, Unknown.BED_SLOPE
     ];
 
-    /+++++++++++++++++++++++++++++++++++++++++++++++
-    +                Constructors                  +
-    +++++++++++++++++++++++++++++++++++++++++++++++/
+    //++++++++++++++++++++++++++++++++++++++++++++++
+    //               Constructors                  +
+    //+++++++++++++++++++++++++++++++++++++++++++++/
     /// Empty Constructor
     this()
     {
@@ -56,36 +56,51 @@ class CircularOpenChannel : OpenChannel
         unknown = u;
     }
 
-    /+++++++++++++++++++++++++++++++++++++++++++++++ 
-    +                  Setters                     +
-    +++++++++++++++++++++++++++++++++++++++++++++++/
-    /++ Sets the pipe diameter. +/
+    //++++++++++++++++++++++++++++++++++++++++++++++ 
+    //                 Setters                     +
+    //+++++++++++++++++++++++++++++++++++++++++++++/
+    /**
+    * Sets the pipe diameter.
+    * Params:
+    *   d = Diameter given.
+    */
     void setDiameter(double d)
     {
         diameter = d;
     }
 
-    /+++++++++++++++++++++++++++++++++++++++++++++++ 
-    +                  Getters                     +
-    +++++++++++++++++++++++++++++++++++++++++++++++/
+    //++++++++++++++++++++++++++++++++++++++++++++++ 
+    //                 Getters                     +
+    //+++++++++++++++++++++++++++++++++++++++++++++/
 
-    /++ Returns the diameter of the pipe. +/
+    /**
+    * Gets the diameter of the pipe. 
+    * Returns:
+    *   The pipe diameter.
+    */
     double getDiameter()
     {
         return diameter;
     }
 
-    /++ Shows if the pipe is more than half full. +/
+    /** 
+    * Shows if the pipe is more than half full. 
+    * Returns:
+    *   True if the water depth if greater than the radius of the pipe.
+    */
     bool isAlmostFull()
     {
         return almostFull;
     }
 
-    /+++++++++++++++++++++++++++++++++++++++++++++++
-    +                   Methods                    +
-    +++++++++++++++++++++++++++++++++++++++++++++++/
-    /// Solution summary.
-    /// To be called in the application API
+    //++++++++++++++++++++++++++++++++++++++++++++++
+    //                  Methods                    +
+    //+++++++++++++++++++++++++++++++++++++++++++++/
+    /**
+    * Solution summary.
+    * To be called in the application API.
+    */
+
     bool solve()
     {
         // Reset variables
@@ -131,7 +146,11 @@ class CircularOpenChannel : OpenChannel
         return false;
     }
 
-    /// Solve for the unknown discharge.
+    /**
+    * Solve for the unknown discharge.
+    * Returns:
+    *   True if the calculation for discharge is successful.
+    */
     private bool solveForDischarge()
     {
         if (isValidInputs(isValidDiameter(Unknown.DISCHARGE), isValidBedSlope(Unknown.DISCHARGE),
@@ -161,7 +180,11 @@ class CircularOpenChannel : OpenChannel
         }
     }
 
-    /// Solve for the unknown water depth
+    /**
+    * Solve for the unknown water depth.
+    * Returns:
+    *   True if the calculation for water depth is successful.
+    */
     private bool solveForWaterDepth()
     {
         if (isValidInputs(isValidDiameter(Unknown.WATER_DEPTH), isValidBedSlope(Unknown.WATER_DEPTH),
@@ -221,7 +244,11 @@ class CircularOpenChannel : OpenChannel
         }
     }
 
-    /// Solve for the unknown bed slope
+    /**
+    * Solve for the unknown bed slope.
+    * Returns:
+    *   True if the calculation is successful.
+    */
     private bool solveForBedSlope()
     {
         if (isValidInputs(isValidDiameter(Unknown.BED_SLOPE), isValidWaterDepth(Unknown.BED_SLOPE),
@@ -257,10 +284,17 @@ class CircularOpenChannel : OpenChannel
         }
     }
 
-    /+++++++++++++++++++++++++++++++++++++++++++++++
-    +               Error handling                 +
-    +++++++++++++++++++++++++++++++++++++++++++++++/
-    /// Base width error checking.
+    //++++++++++++++++++++++++++++++++++++++++++++++
+    //              Error handling                 +
+    //+++++++++++++++++++++++++++++++++++++++++++++/
+    
+    /**
+    * Base width error checking.
+    * Params:
+    *   u = The unknown for the channel.
+    * Returns:
+    *   True if the diameter given is valid.
+    */
     private bool isValidDiameter(Unknown u)
     {
         if (isNaN(diameter) && (u != Unknown.PIPE_DIAMETER))
