@@ -2,6 +2,12 @@
 * irregular_section_open_channel module.
 * Contains class for the analysis of irregular shaped sections
 * of open channel.
+* Authors:
+*   Alexius Academia
+* License:
+*   MIT
+* Copyright:
+*   2019
 */
 module libs.irregular_section_open_channel;
 
@@ -44,7 +50,9 @@ class IrregularSectionOpenChannel : OpenChannel
     //                 Setters                     +
     //+++++++++++++++++++++++++++++++++++++++++++++/
     /**
-    *   Set the points with an array of Point object.
+    * Set the points with an array of Point objects.
+    * Params:
+    *   pts = List of Point objects that defines the shape of the channel.
     */
     void setPoints(Point[] pts)
     {
@@ -52,7 +60,9 @@ class IrregularSectionOpenChannel : OpenChannel
     }
 
     /**
-    *   Sets the water elevation.
+    * Sets the water elevation.
+    * Params:
+    *   we = Water elevation.
     */
     void setWaterElevation(float we)
     {
@@ -65,6 +75,8 @@ class IrregularSectionOpenChannel : OpenChannel
 
     /** 
     * Returns the list of points 
+    * Returns:
+    *   List of Point objects that defines the shape of the channel.
     */
     Point[] getPoints()
     {
@@ -77,24 +89,33 @@ class IrregularSectionOpenChannel : OpenChannel
         return newPoints;
     }
 
+    /**
+    * Get the elevation of the lower bank. Either from left or right.
+    * Returns: 
+    *   maxWaterElevation
+    */
     float getMaxWaterElevation()
     {
         return maxWaterElevation;
     }
 
+    /**
+    * Returns the water elevation.
+    */
     float getWaterElevation()
     {
         return waterElevation;
     }
 
+    /// Returns all the available unknowns for this class.
     Unknown[] getAvailableUnknowns()
     {
         return availableUnknowns;
     }
 
-    /+++++++++++++++++++++++++++++++++++++++++++++++ 
-    +                Constructors                  +
-    +++++++++++++++++++++++++++++++++++++++++++++++/
+    //++++++++++++++++++++++++++++++++++++++++++++++ 
+    //               Constructors                  +
+    //+++++++++++++++++++++++++++++++++++++++++++++/
     /// Empty constructor
     this()
     {
@@ -111,6 +132,8 @@ class IrregularSectionOpenChannel : OpenChannel
     +                   Methods                    +
     +++++++++++++++++++++++++++++++++++++++++++++++/
     /// Add a single point
+    /// Params:
+    ///     p = Point to be added to the end of shape definition.
     void addPoint(Point p)
     {
         int lastIndex = cast(int) points.length;
@@ -118,8 +141,9 @@ class IrregularSectionOpenChannel : OpenChannel
         points[lastIndex] = p;
     }
 
-    /// Solution summary.
-    /// To be called in the application API
+    // Solution summary.
+    // To be called in the application API
+    /// Method to be called for the analysis regardless of the unknown.
     bool solve()
     {
         newPoints = null; // Reset newPoints array
