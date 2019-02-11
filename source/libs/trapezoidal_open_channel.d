@@ -131,7 +131,7 @@ class TrapezoidalOpenChannel : OpenChannel
     }
 
     /// Solve for the unknown discharge.
-    private bool solveForDischarge()
+    protected bool solveForDischarge()
     {
         if (isValidInputs(isValidBaseWidth(Unknown.DISCHARGE), isValidBedSlope(Unknown.DISCHARGE),
                 isValidWaterDepth(Unknown.DISCHARGE),
@@ -163,7 +163,7 @@ class TrapezoidalOpenChannel : OpenChannel
     }
 
     /// Solve for the unknown water depth
-    private bool solveForWaterDepth()
+    protected bool solveForWaterDepth()
     {
         if (isValidInputs(isValidBaseWidth(Unknown.WATER_DEPTH), isValidBedSlope(Unknown.WATER_DEPTH),
                 isValidDischarge(Unknown.WATER_DEPTH),
@@ -222,7 +222,7 @@ class TrapezoidalOpenChannel : OpenChannel
     }
 
     /// Solve for the unknown base width
-    private bool solveForBaseWidth()
+    protected bool solveForBaseWidth()
     {
         if (isValidInputs(isValidWaterDepth(Unknown.BASE_WIDTH), isValidBedSlope(Unknown.BASE_WIDTH),
                 isValidDischarge(Unknown.BASE_WIDTH),
@@ -281,7 +281,7 @@ class TrapezoidalOpenChannel : OpenChannel
     }
 
     /// Solve for the unknown bed slope
-    private bool solveForBedSlope()
+    protected bool solveForBedSlope()
     {
         if (isValidInputs(isValidWaterDepth(Unknown.BED_SLOPE), isValidBaseWidth(Unknown.BED_SLOPE),
                 isValidDischarge(Unknown.BED_SLOPE),
@@ -314,9 +314,7 @@ class TrapezoidalOpenChannel : OpenChannel
                         (2.0 / 3));
                 trialDischarge = averageVelocity * wettedArea;
 
-                /+
-                + My root finding algorithm
-                +/
+                // Start of my root finding algorithm
                 if (trialDischarge < discharge)
                 {
                     increment *= 2.1;
@@ -327,9 +325,7 @@ class TrapezoidalOpenChannel : OpenChannel
                     bedSlope -= increment;
                     increment *= .75;
                 }
-                /+
-                + End of root finding algorithm
-                +/
+                // End of root finding algorithm
             }
             return true;
         }
@@ -342,8 +338,14 @@ class TrapezoidalOpenChannel : OpenChannel
     //++++++++++++++++++++++++++++++++++++++++++++++
     //              Error handling                 +
     //+++++++++++++++++++++++++++++++++++++++++++++/
-    /// Base width error checking.
-    private bool isValidBaseWidth(Unknown u)
+    /**
+    * Base width error checking.
+    * Params:
+    *   u = Unknown 
+    * Returns:
+    *   Returns true if the base width given is valid.
+    */
+    protected bool isValidBaseWidth(Unknown u)
     {
         if (isNaN(baseWidth) && (u != Unknown.BASE_WIDTH))
         {
@@ -361,8 +363,14 @@ class TrapezoidalOpenChannel : OpenChannel
         return true;
     }
 
-    /// Sideslope error checking
-    private bool isValidSideslope(Unknown u)
+    /**
+    * Sideslope error checking
+    * Params:
+    *   u = Unknown
+    * Returns:
+    *   Returns true if the side slope given is valid.
+    */
+    protected bool isValidSideslope(Unknown u)
     {
         if (isNaN(sideSlope))
         {
@@ -380,7 +388,10 @@ class TrapezoidalOpenChannel : OpenChannel
         return true;
     }
 
-    private void solveForCriticalFlow()
+    /**
+    * Critical flow analysis.
+    */
+    protected void solveForCriticalFlow()
     {
         const Q2g = pow(discharge, 2) / GRAVITY_METRIC;
 
