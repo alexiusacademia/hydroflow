@@ -40,10 +40,11 @@ class RectangularOpenChannel : OpenChannel
   {
     this.unknown = Unknown.DISCHARGE;
   }
-
-  /// Initialize the RectangularOpenChannel with the unknown as given
-  /// Params:
-  ///   u = Unknown
+  /**
+  * Initialize the RectangularOpenChannel with the unknown as given
+  * Params:
+  *   u = Unknown
+  */
   this(Unknown u)
   {
     this.unknown = u;
@@ -127,7 +128,7 @@ class RectangularOpenChannel : OpenChannel
   * Returns:
   *   True if the calculation is successful.
   */
-  private bool solveForDischarge()
+  protected bool solveForDischarge()
   {
     if (isValidInputs(isValidBaseWidth(Unknown.DISCHARGE), isValidBedSlope(Unknown.DISCHARGE),
         isValidWaterDepth(Unknown.DISCHARGE), isValidManning))
@@ -161,7 +162,7 @@ class RectangularOpenChannel : OpenChannel
   * Returns:
   *   True if the calculation is successful. 
   */
-  private bool solveForWaterDepth()
+  protected bool solveForWaterDepth()
   {
     if (isValidInputs(isValidBaseWidth(Unknown.WATER_DEPTH),
         isValidBedSlope(Unknown.WATER_DEPTH), isValidDischarge(Unknown.WATER_DEPTH), isValidManning))
@@ -192,9 +193,7 @@ class RectangularOpenChannel : OpenChannel
         averageVelocity = (1.0 / manningRoughness) * sqrt(bedSlope) * pow(hydraulicRadius, (2.0 / 3));
         trialDischarge = averageVelocity * wettedArea;
 
-        /+
-          + My root finding algorithm
-          +/
+        // My root finding algorithm
         if (trialDischarge < discharge)
         {
           increment *= 2.1;
@@ -205,9 +204,7 @@ class RectangularOpenChannel : OpenChannel
           waterDepth -= increment;
           increment *= .75;
         }
-        /+
-          + End of root finding algorithm
-          +/
+        // End of root finding algorithm
       }
       return true;
     }
@@ -222,7 +219,7 @@ class RectangularOpenChannel : OpenChannel
   * Returns:
   *   True if the calculation is successful. 
   */
-  private bool solveForBaseWidth()
+  protected bool solveForBaseWidth()
   {
     if (isValidInputs(isValidWaterDepth(Unknown.BASE_WIDTH),
         isValidBedSlope(Unknown.BASE_WIDTH), isValidDischarge(Unknown.BASE_WIDTH), isValidManning))
@@ -253,9 +250,7 @@ class RectangularOpenChannel : OpenChannel
         averageVelocity = (1.0 / manningRoughness) * sqrt(bedSlope) * pow(hydraulicRadius, (2.0 / 3));
         trialDischarge = averageVelocity * wettedArea;
 
-        /+
-          + My root finding algorithm
-          +/
+        // Start of my root finding algorithm
         if (trialDischarge < discharge)
         {
           increment *= 2.1;
@@ -266,9 +261,8 @@ class RectangularOpenChannel : OpenChannel
           baseWidth -= increment;
           increment *= .75;
         }
-        /+
-          + End of root finding algorithm
-          +/
+        // End of root finding algorithm
+        
       }
       return true;
     }
@@ -283,7 +277,7 @@ class RectangularOpenChannel : OpenChannel
   * Returns:
   *   True if the calculation is successful. 
   */
-  private bool solveForBedSlope()
+  protected bool solveForBedSlope()
   {
     if (isValidInputs(isValidWaterDepth(Unknown.BED_SLOPE),
         isValidBaseWidth(Unknown.BED_SLOPE), isValidDischarge(Unknown.BED_SLOPE), isValidManning))
@@ -314,9 +308,8 @@ class RectangularOpenChannel : OpenChannel
         averageVelocity = (1.0 / manningRoughness) * sqrt(bedSlope) * pow(hydraulicRadius, (2.0 / 3));
         trialDischarge = averageVelocity * wettedArea;
 
-        /+
-          + My root finding algorithm
-          +/
+        
+        // Start of my root finding algorithm
         if (trialDischarge < discharge)
         {
           increment *= 2.1;
@@ -327,9 +320,8 @@ class RectangularOpenChannel : OpenChannel
           bedSlope -= increment;
           increment *= .75;
         }
-        /+
-          + End of root finding algorithm
-          +/
+        // End of root finding algorithm
+        
       }
       return true;
     }
@@ -339,8 +331,10 @@ class RectangularOpenChannel : OpenChannel
     }
   }
 
-  
-  private void solveForCriticalFlow()
+  /**
+  * Analysis of critical flow.
+  */
+  protected void solveForCriticalFlow()
   {
     // Hydraulic depth
     hydraulicDepth = wettedArea / baseWidth;
