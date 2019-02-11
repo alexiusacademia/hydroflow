@@ -28,7 +28,12 @@ void main()
 	if (success)
 	{
 		writeln("Discharge = ", coc.getDischarge);
+		writeln("Average velocity = ", coc.getAverageVelocity);
+		writeln("Hydraulic depth = ", coc.getHydraulicDepth);
 		writeln(coc.errorMessage);
+		writeln("Froude number = ", coc.getFroudeNumber);
+		writeln("Flow Type = ", coc.getFlowType);
+
 	}
 	else
 	{
