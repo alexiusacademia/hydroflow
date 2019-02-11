@@ -25,12 +25,7 @@ class CircularOpenChannel : OpenChannel
     //                Properties                   +
     //+++++++++++++++++++++++++++++++++++++++++++++/
     /// Diameter
-    double diameter;
-
-    // Calculated properties
-
-    /// Wetted properties
-    private double wettedArea, wettedPerimeter;
+    private double diameter;
     /// More than half full
     private bool almostFull;
     /// Percentage full
@@ -80,7 +75,7 @@ class CircularOpenChannel : OpenChannel
 
     /**
     * Gets the diameter of the pipe. 
-    * Return:
+    * Returns:
     *   The pipe diameter.
     */
     double getDiameter()
@@ -90,7 +85,7 @@ class CircularOpenChannel : OpenChannel
 
     /** 
     * Shows if the pipe is more than half full. 
-    * Return:
+    * Returns:
     *   True if the water depth if greater than the radius of the pipe.
     */
     bool isAlmostFull()
@@ -105,7 +100,7 @@ class CircularOpenChannel : OpenChannel
     * Solution summary.
     * To be called in the application API.
     */
-    
+
     bool solve()
     {
         // Reset variables
@@ -151,7 +146,11 @@ class CircularOpenChannel : OpenChannel
         return false;
     }
 
-    /// Solve for the unknown discharge.
+    /**
+    * Solve for the unknown discharge.
+    * Returns:
+    *   True if the calculation for discharge is successful.
+    */
     private bool solveForDischarge()
     {
         if (isValidInputs(isValidDiameter(Unknown.DISCHARGE), isValidBedSlope(Unknown.DISCHARGE),
@@ -181,7 +180,11 @@ class CircularOpenChannel : OpenChannel
         }
     }
 
-    /// Solve for the unknown water depth
+    /**
+    * Solve for the unknown water depth.
+    * Returns:
+    *   True if the calculation for water depth is successful.
+    */
     private bool solveForWaterDepth()
     {
         if (isValidInputs(isValidDiameter(Unknown.WATER_DEPTH), isValidBedSlope(Unknown.WATER_DEPTH),
@@ -241,7 +244,11 @@ class CircularOpenChannel : OpenChannel
         }
     }
 
-    /// Solve for the unknown bed slope
+    /**
+    * Solve for the unknown bed slope.
+    * Returns:
+    *   True if the calculation is successful.
+    */
     private bool solveForBedSlope()
     {
         if (isValidInputs(isValidDiameter(Unknown.BED_SLOPE), isValidWaterDepth(Unknown.BED_SLOPE),
@@ -277,10 +284,17 @@ class CircularOpenChannel : OpenChannel
         }
     }
 
-    /+++++++++++++++++++++++++++++++++++++++++++++++
-    +               Error handling                 +
-    +++++++++++++++++++++++++++++++++++++++++++++++/
-    /// Base width error checking.
+    //++++++++++++++++++++++++++++++++++++++++++++++
+    //              Error handling                 +
+    //+++++++++++++++++++++++++++++++++++++++++++++/
+    
+    /**
+    * Base width error checking.
+    * Params:
+    *   u = The unknown for the channel.
+    * Returns:
+    *   True if the diameter given is valid.
+    */
     private bool isValidDiameter(Unknown u)
     {
         if (isNaN(diameter) && (u != Unknown.PIPE_DIAMETER))

@@ -1,27 +1,30 @@
+/**
+* openchannel module.
+*/
 module libs.openchannel;
 
 import std.math;
 import std.algorithm;
 
 /++
-    Open Channel
-
-    The base class for all open channels.
++ The base class for all open channels.
 +/
 class OpenChannel
 {
-    /** ****************************************
-    * Constants
-    ***************************************** */
-    protected const double GRAVITY_METRIC = 9.81;
-    protected const ERROR = 0.0001;            // Trial error max to 1%
+    //******************************************
+    // Constants
+    //*************************************** */
+    /// Gravitational acceleration in metric.
+    protected const GRAVITY_METRIC = 9.81;
+    /// Trial error max to 0.01%
+    protected const ERROR = 0.0001;            
 
-    /** ****************************************
-    * Properties
-    ***************************************** */
+    // ****************************************
+    // Properties
+    //*************************************** */
     /**
-        Flow types. These are the categories in which the calculated froude number
-        is compared to.
+    * Flow types. These are the categories in which the calculated froude number
+    * is compared to.
     */
     public enum FlowType
     {
@@ -40,7 +43,7 @@ class OpenChannel
         PIPE_DIAMETER
     }
 
-    /// Discharge / Flow Rate
+    /// Discharge (Flow Rate)
     protected double discharge;
 
     /// Rise over run of the channel.
@@ -71,15 +74,22 @@ class OpenChannel
     /// Enum type. (e.g. DISCHARGE, WATER_DEPTH, etc.)
     protected Unknown unknown;
 
+    /// Flow type reconned from the Enum type FlowType
     protected FlowType flowType;
-
+    /// Hydraulic depth
     protected double hydraulicDepth;
+    /// Discharge intensity. Discharge divided by the top channel width.
     protected double dischargeIntensity;
+    /// Depth of flow that will give critical flow.
     protected double criticalDepth;
+    /// Bed slope that will give critical flow.
     protected double criticalSlope;
+    /// Available unknowns
     protected Unknown[] availableUnknowns = [Unknown.DISCHARGE];
-
+    /// Variable that tells if the calculation has no error.
     protected bool isCalculationSuccess;
+    /// The error or warning message that helps debug or give
+    /// information about the calculation results.
     public string errorMessage;
 
     /+++++++++++++++++++++++++++++++++++++++++++++++ 
