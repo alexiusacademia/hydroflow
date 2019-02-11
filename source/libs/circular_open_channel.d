@@ -12,38 +12,43 @@ module libs.circular_open_channel;
 import std.math : sqrt, abs, pow, isNaN, PI, sin, acos;
 import std.algorithm : canFind;
 
-// Custom modules
+/// Custom modules
 import libs.openchannel;
 
+/**
+* Subclass of OpenChannel for the calculation and 
+* analysis of circular sections.
+*/
 class CircularOpenChannel : OpenChannel
 {
-    /+++++++++++++++++++++++++++++++++++++++++++++++
-    +                 Properties                   +
-    +++++++++++++++++++++++++++++++++++++++++++++++/
+    //++++++++++++++++++++++++++++++++++++++++++++++
+    //                Properties                   +
+    //+++++++++++++++++++++++++++++++++++++++++++++/
     /// Diameter
     double diameter;
 
-    /* Calculated properties */
-    // Wetted properties
-    private double wettedArea, wettedPerimeter;
-    // More than half full
-    private bool almostFull;
-    // Percentage full
-    private double percentFull;
-    // Area of central triangle
-    private double triangleArea;
-    // Trial discharge
-    private double trialDischarge;
-    // Initial increment for trial and error
-    private double increment;
+    // Calculated properties
 
+    /// Wetted properties
+    private double wettedArea, wettedPerimeter;
+    /// More than half full
+    private bool almostFull;
+    /// Percentage full
+    private double percentFull;
+    /// Area of central triangle
+    private double triangleArea;
+    /// Trial discharge
+    private double trialDischarge;
+    /// Initial increment for trial and error
+    private double increment;
+    /// Available unknowns for this section.
     private Unknown[] availableUnknowns = [
         Unknown.DISCHARGE, Unknown.WATER_DEPTH, Unknown.BED_SLOPE
     ];
 
-    /+++++++++++++++++++++++++++++++++++++++++++++++
-    +                Constructors                  +
-    +++++++++++++++++++++++++++++++++++++++++++++++/
+    //++++++++++++++++++++++++++++++++++++++++++++++
+    //               Constructors                  +
+    //+++++++++++++++++++++++++++++++++++++++++++++/
     /// Empty Constructor
     this()
     {
@@ -56,36 +61,51 @@ class CircularOpenChannel : OpenChannel
         unknown = u;
     }
 
-    /+++++++++++++++++++++++++++++++++++++++++++++++ 
-    +                  Setters                     +
-    +++++++++++++++++++++++++++++++++++++++++++++++/
-    /++ Sets the pipe diameter. +/
+    //++++++++++++++++++++++++++++++++++++++++++++++ 
+    //                 Setters                     +
+    //+++++++++++++++++++++++++++++++++++++++++++++/
+    /**
+    * Sets the pipe diameter.
+    * Params:
+    *   d = Diameter given.
+    */
     void setDiameter(double d)
     {
         diameter = d;
     }
 
-    /+++++++++++++++++++++++++++++++++++++++++++++++ 
-    +                  Getters                     +
-    +++++++++++++++++++++++++++++++++++++++++++++++/
+    //++++++++++++++++++++++++++++++++++++++++++++++ 
+    //                 Getters                     +
+    //+++++++++++++++++++++++++++++++++++++++++++++/
 
-    /++ Returns the diameter of the pipe. +/
+    /**
+    * Gets the diameter of the pipe. 
+    * Return:
+    *   The pipe diameter.
+    */
     double getDiameter()
     {
         return diameter;
     }
 
-    /++ Shows if the pipe is more than half full. +/
+    /** 
+    * Shows if the pipe is more than half full. 
+    * Return:
+    *   True if the water depth if greater than the radius of the pipe.
+    */
     bool isAlmostFull()
     {
         return almostFull;
     }
 
-    /+++++++++++++++++++++++++++++++++++++++++++++++
-    +                   Methods                    +
-    +++++++++++++++++++++++++++++++++++++++++++++++/
-    /// Solution summary.
-    /// To be called in the application API
+    //++++++++++++++++++++++++++++++++++++++++++++++
+    //                  Methods                    +
+    //+++++++++++++++++++++++++++++++++++++++++++++/
+    /**
+    * Solution summary.
+    * To be called in the application API.
+    */
+    
     bool solve()
     {
         // Reset variables
