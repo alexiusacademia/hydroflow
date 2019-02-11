@@ -1,3 +1,8 @@
+/**
+* irregular_section_open_channel module.
+* Contains class for the analysis of irregular shaped sections
+* of open channel.
+*/
 module libs.irregular_section_open_channel;
 
 /// Standard modules
@@ -10,22 +15,34 @@ import libs.openchannel;
 import libs.utils.point;
 import libs.utils.geometry_calculators;
 
+/**
+* Class for the analysis of irregular shaped sections
+* of open channel.
+*/
 class IrregularSectionOpenChannel : OpenChannel
 {
-    /+++++++++++++++++++++++++++++++++++++++++++++++
-    +                 Properties                   +
-    +++++++++++++++++++++++++++++++++++++++++++++++/
-    private Point[] points;
-    private Point[] newPoints;
-    private float maxWaterElevation;
-    private float waterElevation;
+    //++++++++++++++++++++++++++++++++++++++++++++++
+    //                Properties                   +
+    //+++++++++++++++++++++++++++++++++++++++++++++/
+
+    /** 
+    * List of points that defines the channel shape.
+    */
+    protected Point[] points;
+    /// Part of the <b>points</b> variable that is used and
+    /// manipulated during the calculation.
+    protected Point[] newPoints;
+    /// Maximum allowed water elevation based on the lowest bank.
+    protected float maxWaterElevation;
+    /// Water elevation.
+    protected float waterElevation;
     private double trialDischarge;
+    /// Available unknowns for this class.
+    protected Unknown[] availableUnknowns = [Unknown.DISCHARGE];
 
-    Unknown[] availableUnknowns = [Unknown.DISCHARGE];
-
-    /+++++++++++++++++++++++++++++++++++++++++++++++ 
-    +                  Setters                     +
-    +++++++++++++++++++++++++++++++++++++++++++++++/
+    //++++++++++++++++++++++++++++++++++++++++++++++ 
+    //                 Setters                     +
+    //+++++++++++++++++++++++++++++++++++++++++++++/
     /**
     *   Set the points with an array of Point object.
     */
@@ -42,11 +59,13 @@ class IrregularSectionOpenChannel : OpenChannel
         waterElevation = we;
     }
 
-    /+++++++++++++++++++++++++++++++++++++++++++++++ 
-    +                  Getters                     +
-    +++++++++++++++++++++++++++++++++++++++++++++++/
+    //++++++++++++++++++++++++++++++++++++++++++++++ 
+    //                 Getters                     +
+    //+++++++++++++++++++++++++++++++++++++++++++++/
 
-    /** Returns the list of points */
+    /** 
+    * Returns the list of points 
+    */
     Point[] getPoints()
     {
         return points;
@@ -207,6 +226,25 @@ class IrregularSectionOpenChannel : OpenChannel
         return false;
     }
 
+    /**
+    * Critical flow analysis.
+    */ 
+    private void solveForCriticalFlow()
+    {
+        // Top width
+        double T;
+
+        T = distanceBetweenTwoPoints(newPoints[0],
+                newPoints[cast(int)newPoints.length - 1]);
+
+        hydraulicDepth = wettedArea / T;
+        froudeNumber = averageVelocity / sqrt(
+                GRAVITY_METRIC * hydraulicDepth);
+
+        // Select the flow type
+        calculateFlowType();
+    }
+
     /// Finds the elevation of the lowest point from the cross section.
     private float calculateLowestElevation()
     {
@@ -231,4 +269,21 @@ class IrregularSectionOpenChannel : OpenChannel
         return lowest;
     }
 
+    /**
+    * Calculates the distance between two given coordinates.
+    * Params:
+    *   p1 = object Point, x and y coordinate
+    *   p2 = another point
+    * Returns:
+    *   The distance between p1 and p2.
+    */
+    private double distanceBetweenTwoPoints(Point p1, Point p2)
+    {
+        float x1, y1, x2, y2;
+        x1 = p1.x;
+        y1 = p1.y;
+        x2 = p2.x;
+        y2 = p2.y;
+        return sqrt(pow((y2 - y1), 2) + pow((x2 - x1), 2));
+    }
 }

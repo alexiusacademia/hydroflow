@@ -1,3 +1,7 @@
+/**
+* point module.
+* Contains the definition of the Point class.
+*/
 module libs.utils.point;
 
 /**
@@ -5,8 +9,17 @@ module libs.utils.point;
 */
 class Point 
 {
-    double x, y;
+    /// Abscissa
+    double x;
+    /// Ordinate
+    double y;
 
+    /**
+    * Constructor.
+    * Params:
+    *   a = abscissa or x
+    *   b = ordinate or y
+    */
     this(float a, float b) {
         x = a;
         y = b;

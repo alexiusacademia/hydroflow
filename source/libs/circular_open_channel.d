@@ -24,8 +24,8 @@ class CircularOpenChannel : OpenChannel
     //++++++++++++++++++++++++++++++++++++++++++++++
     //                Properties                   +
     //+++++++++++++++++++++++++++++++++++++++++++++/
-    /// Diameter
-    private double diameter;
+    /// Pipe diameter
+    protected double diameter;
     /// More than half full
     private bool almostFull;
     /// Percentage full
