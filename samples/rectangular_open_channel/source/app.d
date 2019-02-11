@@ -10,7 +10,7 @@ void main()
 
 	RectangularOpenChannel roc = new RectangularOpenChannel();
 
-	roc.setUnknown = roc.Unknown.PIPE_DIAMETER;
+	roc.setUnknown = roc.Unknown.WATER_DEPTH;
 
 	// Set the given values
 	roc.setBedSlope = 0.001;
@@ -27,6 +27,12 @@ void main()
 	if (success)
 	{
 		writeln("Water depth = ", roc.getWaterDepth);
+		writeln("Wetted area = ", roc.getWettedArea);
+		writeln("Base width = ", roc.getBaseWidth);
+		writeln("Average velocity = ", roc.getAverageVelocity);
+		writeln("Hydraulic depth = ", roc.getHydraulicDepth);
+		writeln("Flow type = ", roc.getFlowType);
+		writeln("Froude number = ", roc.getFroudeNumber);
 	}
 	else
 	{

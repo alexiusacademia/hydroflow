@@ -1,30 +1,40 @@
+/**
+* rectangular_open_channel module.
+* Contans class for the analysis of rectangular sections.
+* Authors:
+*   Alexius Academia
+* License:
+*   MIT
+* Copyright:
+*   2019
+*/
 module libs.rectangular_open_channel;
 
-/// Standard modules
-import std.math: pow, sqrt, abs, isNaN;
-import std.algorithm: canFind;
+// Standard modules
+import std.math : pow, sqrt, abs, isNaN;
+import std.algorithm : canFind;
 
 // Custom modules
 import libs.openchannel;
 
+/**
+* Class for the analysis of rectangular sections.
+*/
 class RectangularOpenChannel : OpenChannel
 {
-  /+++++++++++++++++++++++++++++++++++++++++++++++
-  +                 Properties                   +
-  +++++++++++++++++++++++++++++++++++++++++++++++/
+  //++++++++++++++++++++++++++++++++++++++++++++++
+  //                Properties                   +
+  //+++++++++++++++++++++++++++++++++++++++++++++/
   /// Base width or the channel width for rectangular sections.
-  double baseWidth;
-
-  private Unknown[] availableUnknowns = [
+  protected double baseWidth;
+  /// Available unknowns for this class.
+  protected Unknown[] availableUnknowns = [
     Unknown.DISCHARGE, Unknown.WATER_DEPTH, Unknown.BED_SLOPE, Unknown.BASE_WIDTH
   ];
 
-  /// Calculated properties
-  double wettedArea, wettedPerimeter;
-
-  /+++++++++++++++++++++++++++++++++++++++++++++++
-  +                Constructors                  +
-  +++++++++++++++++++++++++++++++++++++++++++++++/
+  //++++++++++++++++++++++++++++++++++++++++++++++
+  //               Constructors                  +
+  //+++++++++++++++++++++++++++++++++++++++++++++/
   /// Empty Constructor
   this()
   {
@@ -32,32 +42,41 @@ class RectangularOpenChannel : OpenChannel
   }
 
   /// Initialize the RectangularOpenChannel with the unknown as given
+  /// Params:
+  ///   u = Unknown
   this(Unknown u)
   {
     this.unknown = u;
   }
 
-  /+++++++++++++++++++++++++++++++++++++++++++++++ 
-  +                  Setters                     +
-  +++++++++++++++++++++++++++++++++++++++++++++++/
+  //++++++++++++++++++++++++++++++++++++++++++++++ 
+  //                 Setters                     +
+  //+++++++++++++++++++++++++++++++++++++++++++++/
+  /** 
+  * Sets the width of the base of the channel.
+  * Params:
+  *   b = Width of the channel.
+  */
   void setBaseWidth(double b)
   {
     baseWidth = b;
   }
 
-  /+++++++++++++++++++++++++++++++++++++++++++++++ 
-  +                  Getters                     +
-  +++++++++++++++++++++++++++++++++++++++++++++++/
+  //++++++++++++++++++++++++++++++++++++++++++++++ 
+  //                 Getters                     +
+  //+++++++++++++++++++++++++++++++++++++++++++++/
+  /// Returns the width of the channel.
   double getBaseWidth()
   {
     return baseWidth;
   }
 
-  /+++++++++++++++++++++++++++++++++++++++++++++++
-  +                   Methods                    +
-  +++++++++++++++++++++++++++++++++++++++++++++++/
-  /// Solution summary.
-  /// To be called in the application API
+  //++++++++++++++++++++++++++++++++++++++++++++++
+  //                  Methods                    +
+  //+++++++++++++++++++++++++++++++++++++++++++++/
+  // Solution summary.
+  // To be called in the application API
+  /// Method to be called for the analysis regardless of the unknown.
   bool solve()
   {
     if (!canFind(availableUnknowns, unknown))
@@ -71,24 +90,28 @@ class RectangularOpenChannel : OpenChannel
     case Unknown.DISCHARGE:
       if (solveForDischarge)
       {
+        solveForCriticalFlow();
         return true;
       }
       break;
     case Unknown.WATER_DEPTH:
       if (solveForWaterDepth)
       {
+        solveForCriticalFlow();
         return true;
       }
       break;
     case Unknown.BASE_WIDTH:
       if (solveForBaseWidth)
       {
+        solveForCriticalFlow();
         return true;
       }
       break;
     case Unknown.BED_SLOPE:
       if (solveForBedSlope)
       {
+        solveForCriticalFlow();
         return true;
       }
       break;
@@ -99,7 +122,11 @@ class RectangularOpenChannel : OpenChannel
     return false;
   }
 
-  /// Solve for the unknown discharge.
+  /** 
+  * Solve for the unknown discharge.
+  * Returns:
+  *   True if the calculation is successful.
+  */
   private bool solveForDischarge()
   {
     if (isValidInputs(isValidBaseWidth(Unknown.DISCHARGE), isValidBedSlope(Unknown.DISCHARGE),
@@ -129,7 +156,11 @@ class RectangularOpenChannel : OpenChannel
     }
   }
 
-  /// Solve for the unknown water depth
+  /**
+  * Solve for the unknown water depth
+  * Returns:
+  *   True if the calculation is successful. 
+  */
   private bool solveForWaterDepth()
   {
     if (isValidInputs(isValidBaseWidth(Unknown.WATER_DEPTH),
@@ -186,7 +217,11 @@ class RectangularOpenChannel : OpenChannel
     }
   }
 
-  /// Solve for the unknown base width
+  /**
+  * Solve for the unknown base width
+  * Returns:
+  *   True if the calculation is successful. 
+  */
   private bool solveForBaseWidth()
   {
     if (isValidInputs(isValidWaterDepth(Unknown.BASE_WIDTH),
@@ -243,7 +278,11 @@ class RectangularOpenChannel : OpenChannel
     }
   }
 
-  /// Solve for the unknown bed slope
+  /**
+  * Solve for the unknown bed slope
+  * Returns:
+  *   True if the calculation is successful. 
+  */
   private bool solveForBedSlope()
   {
     if (isValidInputs(isValidWaterDepth(Unknown.BED_SLOPE),
@@ -300,10 +339,36 @@ class RectangularOpenChannel : OpenChannel
     }
   }
 
-  /+++++++++++++++++++++++++++++++++++++++++++++++
-  +               Error handling                 +
-  +++++++++++++++++++++++++++++++++++++++++++++++/
-  /// Base width error checking.
+  
+  private void solveForCriticalFlow()
+  {
+    // Hydraulic depth
+    hydraulicDepth = wettedArea / baseWidth;
+
+    // Froude number
+    froudeNumber = averageVelocity / sqrt(GRAVITY_METRIC * hydraulicDepth);
+
+    // Select the flow type
+    calculateFlowType();
+
+    // Discharge intensity
+    dischargeIntensity = discharge / baseWidth;
+
+    // Critical depth
+    criticalDepth = pow(pow(dischargeIntensity,
+        2) / GRAVITY_METRIC, (1.0 / 3.0));
+  }
+
+  //++++++++++++++++++++++++++++++++++++++++++++++
+  //              Error handling                 +
+  //+++++++++++++++++++++++++++++++++++++++++++++/
+  /** 
+  * Base width error checking.
+  * Params:
+  *   u = Unknown
+  * Returns:
+  *   True if base width is valid.
+  */
   private bool isValidBaseWidth(Unknown u)
   {
     if (isNaN(baseWidth) && (u != Unknown.BASE_WIDTH))
