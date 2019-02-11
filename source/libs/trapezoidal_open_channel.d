@@ -1,33 +1,38 @@
+/**
+* trapezoidal_open_channel module.
+* Contains class for the analysis of trapezoidal and triangular channels.
+*/
 module libs.trapezoidal_open_channel;
 
-/// Standard modules
-import std.math: pow, sqrt, pow, isNaN, abs;
-import std.algorithm: canFind;
+// Standard modules
+import std.math : pow, sqrt, pow, isNaN, abs;
+import std.algorithm : canFind;
 
 // Custom modules
 import libs.openchannel;
 
+/**
+* Class for the analysis of trapezoidal and triangular channels.
+*/
 class TrapezoidalOpenChannel : OpenChannel
 {
-    /+++++++++++++++++++++++++++++++++++++++++++++++
-    +                 Properties                   +
-    +++++++++++++++++++++++++++++++++++++++++++++++/
+    //++++++++++++++++++++++++++++++++++++++++++++++
+    //                Properties                   +
+    //+++++++++++++++++++++++++++++++++++++++++++++/
     /// Base width or the channel width for rectangular sections.
-    double baseWidth;
+    protected double baseWidth;
 
     /// Sideslope
-    float sideSlope;
+    protected float sideSlope;
 
-    /// Calculated properties
-    double wettedArea, wettedPerimeter;
-
-    private Unknown[] availableUnknowns = [
+    /// Available unknowns for this class.
+    protected Unknown[] availableUnknowns = [
         Unknown.DISCHARGE, Unknown.WATER_DEPTH, Unknown.BED_SLOPE, Unknown.BASE_WIDTH
     ];
 
-    /+++++++++++++++++++++++++++++++++++++++++++++++
-    +                Constructors                  +
-    +++++++++++++++++++++++++++++++++++++++++++++++/
+    //++++++++++++++++++++++++++++++++++++++++++++++
+    //               Constructors                  +
+    //+++++++++++++++++++++++++++++++++++++++++++++/
     /// Empty Constructor
     this()
     {
@@ -35,37 +40,51 @@ class TrapezoidalOpenChannel : OpenChannel
     }
 
     /// Initialize the RectangularOpenChannel with the unknown as given
+    /// Params:
+    ///     u = Unknown
     this(Unknown u)
     {
         this.unknown = u;
     }
 
-    /+++++++++++++++++++++++++++++++++++++++++++++++ 
-    +                  Setters                     +
-    +++++++++++++++++++++++++++++++++++++++++++++++/
+    //++++++++++++++++++++++++++++++++++++++++++++++ 
+    //                 Setters                     +
+    //+++++++++++++++++++++++++++++++++++++++++++++/
+    /**
+    * Sets the width at the smaller base of the channel.
+    * Params:
+    *   b = Base width
+    */
     void setBaseWidth(double b)
     {
         baseWidth = b;
     }
 
+    /**
+    * Sets the side slope of the channel. Assumming symmetrical section.
+    * Params:
+    *   ss = Side slope
+    */
     void setSideSlope(float ss)
     {
         sideSlope = ss;
     }
 
-    /+++++++++++++++++++++++++++++++++++++++++++++++ 
-    +                  Getters                     +
-    +++++++++++++++++++++++++++++++++++++++++++++++/
+    //++++++++++++++++++++++++++++++++++++++++++++++ 
+    //                 Getters                     +
+    //+++++++++++++++++++++++++++++++++++++++++++++/
+    /// Returns the base width of the channel.
     double getBaseWidth()
     {
         return baseWidth;
     }
 
-    /+++++++++++++++++++++++++++++++++++++++++++++++
-    +                   Methods                    +
-    +++++++++++++++++++++++++++++++++++++++++++++++/
-    /// Solution summary.
-    /// To be called in the application API
+    //++++++++++++++++++++++++++++++++++++++++++++++
+    //                  Methods                    +
+    //+++++++++++++++++++++++++++++++++++++++++++++/
+    // Solution summary.
+    // To be called in the application API
+    /// Method to be called for the analysis regardless of the unknown.
     bool solve()
     {
         if (!canFind(availableUnknowns, unknown))
@@ -79,24 +98,28 @@ class TrapezoidalOpenChannel : OpenChannel
         case Unknown.DISCHARGE:
             if (solveForDischarge)
             {
+                solveForCriticalFlow();
                 return true;
             }
             break;
         case Unknown.WATER_DEPTH:
             if (solveForWaterDepth)
             {
+                solveForCriticalFlow();
                 return true;
             }
             break;
         case Unknown.BASE_WIDTH:
             if (solveForBaseWidth)
             {
+                solveForCriticalFlow();
                 return true;
             }
             break;
         case Unknown.BED_SLOPE:
             if (solveForBedSlope)
             {
+                solveForCriticalFlow();
                 return true;
             }
             break;
@@ -316,9 +339,9 @@ class TrapezoidalOpenChannel : OpenChannel
         }
     }
 
-    /+++++++++++++++++++++++++++++++++++++++++++++++
-    +               Error handling                 +
-    +++++++++++++++++++++++++++++++++++++++++++++++/
+    //++++++++++++++++++++++++++++++++++++++++++++++
+    //              Error handling                 +
+    //+++++++++++++++++++++++++++++++++++++++++++++/
     /// Base width error checking.
     private bool isValidBaseWidth(Unknown u)
     {
@@ -355,5 +378,45 @@ class TrapezoidalOpenChannel : OpenChannel
 
         errorMessage = "Calculation successful.";
         return true;
+    }
+
+    private void solveForCriticalFlow()
+    {
+        const Q2g = pow(discharge, 2) / GRAVITY_METRIC;
+
+        double tester = 0;
+
+        // Critical depth
+        double yc = 0;
+
+        // Critical area, perimeter, hydraulic radius, critical slope
+        double Ac = 0, Pc, Rc, Sc;
+
+        // Top width
+        double T = 0;
+
+        while (tester < Q2g)
+        {
+            yc += 0.00001;
+            T = baseWidth + 2 * sideSlope * yc;
+            Ac = (T + baseWidth) / 2 * yc;
+            tester = pow(Ac, 3) / T;
+        }
+
+        criticalDepth = yc;
+
+        Pc = 2 * yc * sqrt(pow(this.sideSlope, 2) + 1) + this.baseWidth;
+        Rc = Ac / Pc;
+        Sc = pow(this.discharge / (Ac * pow(Rc, (2.0 / 3.0))) * this.manningRoughness, 2);
+        this.criticalSlope = Sc;
+
+        // Solve for froude number
+        const topWidth = this.baseWidth + 2 * this.sideSlope * this.waterDepth;
+        this.hydraulicDepth = this.wettedArea / topWidth;
+        this.froudeNumber = this.averageVelocity / sqrt(
+                this.GRAVITY_METRIC * this.hydraulicDepth);
+
+        // Select the flow type
+        calculateFlowType();
     }
 }
