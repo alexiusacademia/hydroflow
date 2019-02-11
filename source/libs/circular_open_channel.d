@@ -1,8 +1,16 @@
+/**
+* Module for analysis of circular shaped open channels.
+* 
+* Note: Careful for the flowing full channel as this module
+*   calculates even if the channel is full, even though that case
+*   falls on closed conduits.
+* 
+*/
 module libs.circular_open_channel;
 
 /// Standard modules
-import std.math: sqrt, abs, pow, isNaN, PI, sin, acos;
-import std.algorithm: canFind;
+import std.math : sqrt, abs, pow, isNaN, PI, sin, acos;
+import std.algorithm : canFind;
 
 // Custom modules
 import libs.openchannel;
@@ -29,9 +37,9 @@ class CircularOpenChannel : OpenChannel
     // Initial increment for trial and error
     private double increment;
 
-    private Unknown[] availableUnknowns = [Unknown.DISCHARGE,
-                        Unknown.WATER_DEPTH,
-                        Unknown.BED_SLOPE];
+    private Unknown[] availableUnknowns = [
+        Unknown.DISCHARGE, Unknown.WATER_DEPTH, Unknown.BED_SLOPE
+    ];
 
     /+++++++++++++++++++++++++++++++++++++++++++++++
     +                Constructors                  +
@@ -95,18 +103,24 @@ class CircularOpenChannel : OpenChannel
         case Unknown.DISCHARGE:
             if (solveForDischarge)
             {
+                solveForCriticalFlow();
+                solveForPercentFull();
                 return true;
             }
             break;
         case Unknown.WATER_DEPTH:
             if (solveForWaterDepth)
             {
+                solveForCriticalFlow();
+                solveForPercentFull();
                 return true;
             }
             break;
         case Unknown.BED_SLOPE:
             if (solveForBedSlope)
             {
+                solveForCriticalFlow();
+                solveForPercentFull();
                 return true;
             }
             break;
@@ -265,13 +279,16 @@ class CircularOpenChannel : OpenChannel
         return true;
     }
 
-    /+++++++++++++++++++++++++++++++++++++++++++++++
-    +              Helper Functions                +
-    +++++++++++++++++++++++++++++++++++++++++++++++/
+    //++++++++++++++++++++++++++++++++++++++++++++++
+    //              Helper Functions                +
+    //+++++++++++++++++++++++++++++++++++++++++++++/
+
+    /**
+    * Calculates properties such as wetted area and wetted perimeter.
+    */
     private void calculateWettedProperties()
     {
         float theta;
-        float aTri; // Area of central triangle
         float aSec; // Area of sector
 
         almostFull = (waterDepth >= (diameter / 2.0));
@@ -287,27 +304,151 @@ class CircularOpenChannel : OpenChannel
         }
 
         // Calculate the area of central triangle
-        aTri = pow(diameter, 2) * sin(theta * PI / 180) / 8;
+        triangleArea = pow(diameter, 2) * sin(theta * PI / 180) / 8;
 
         // Calculate area of sector
         if (almostFull)
         {
             aSec = PI * pow(diameter, 2) * (360 - theta) / 1440;
-            wettedArea = aSec + aTri;
+            wettedArea = aSec + triangleArea;
             wettedPerimeter = PI * diameter * (360 - theta) / 360;
         }
         else
         {
             aSec = theta * PI * pow(diameter, 2) / 1440;
-            wettedArea = aSec - aTri;
+            wettedArea = aSec - triangleArea;
             wettedPerimeter = PI * diameter * theta / 360;
         }
     }
 
+    /**
+    * Calculates discharge for the trial and error loop.
+    */
     private void calculateTrialDischarge()
     {
         hydraulicRadius = wettedArea / wettedPerimeter;
         averageVelocity = (1.0 / manningRoughness) * sqrt(bedSlope) * pow(hydraulicRadius, (2.0 / 3));
         trialDischarge = averageVelocity * wettedArea;
+    }
+
+    /**
+    * Solves the top width of the water in a circular section for a 
+    * given water depth.
+    * Params:
+    *   y = Height of the water.\
+    *   triangleArea = Area of triangle consisting of water intersection with the pipe and center point.\
+    *   almostFull = A boolean indicating if y is more than half of the pipe diameter.
+    * Returns:
+    *   The top width of the water.
+    */
+    private double solveForTopWidth(double y, double triangleArea, bool almostFull)
+    {
+        double topWidth;
+        double triangleHeight;
+
+        if (almostFull)
+        {
+            triangleHeight = y - this.diameter / 2;
+        }
+        else
+        {
+            triangleHeight = this.diameter / 2 - y;
+        }
+        topWidth = 2 * triangleArea / triangleHeight;
+
+        return topWidth;
+    }
+
+    /**
+    * Solve for the percentage of height of water over pipe diameter.
+    * 100% means the pipe is flowing full, in this case, the problem no longer
+    * behaves as open channel.
+    */
+    private void solveForPercentFull()
+    {
+        percentFull = this.waterDepth / this.diameter * 100;
+    }
+
+    /**
+    * Analyzes the criticality of the flow.
+    */
+    private void solveForCriticalFlow()
+    {
+        // Q^2 / g
+        double Q2g = pow(discharge, 2) / GRAVITY_METRIC;
+
+        // Other side of equation
+        double tester = 0;
+
+        // Critical depth
+        double yc = 0.0;
+
+        // Critical area, perimeter, hydraulic radius, critical slope
+        double Ac = 0, Pc = 0, Rc, Sc;
+
+        // Top width
+        double T = 0;
+
+        // Angle of water edges from the center
+        double thetaC = 0;
+
+        // Triangle at critical flow
+        double aTriC = 0;
+
+        // Sector at critical flow
+        double aSecC;
+
+        while (tester < Q2g)
+        {
+            yc += 0.0001;
+
+            // Calculate theta
+            if (yc > (diameter / 2))
+            {
+                // Almost full
+                thetaC = 2 * acos((2 * yc - diameter) / diameter) * 180 / PI;
+            }
+            else
+            {
+                // Less than half full
+                thetaC = 2 * acos((diameter - 2 * yc) / diameter) * 180 / PI;
+            }
+
+            // Calculate area of triangle
+            aTriC = pow(diameter, 2) * sin(thetaC * PI / 180) / 8;
+            T = solveForTopWidth(yc, aTriC, (yc > (diameter / 2)));
+            // Calculate area of sector
+            if (yc > (diameter / 2))
+            {
+                aSecC = PI * pow(diameter, 2) * (360 - thetaC) / 1440;
+                Ac = aSecC + aTriC;
+                Pc = PI * diameter * (360 - thetaC) / 360;
+            }
+            else
+            {
+                aSecC = thetaC * PI * pow(diameter, 2) / 1440;
+                Ac = aSecC - aTriC;
+                Pc = PI * diameter * thetaC / 360;
+            }
+
+            // Compare the equation for equality  
+            tester = pow(Ac, 3) / T;
+        }
+
+        // Pass to global variable
+        criticalDepth = yc;
+
+        // Hydraulic radius at critical flow
+        Rc = Ac / Pc;
+
+        Sc = pow((discharge / (Ac * pow(Rc, (2.0 / 3.0))) * manningRoughness), 2);
+        criticalSlope = Sc;
+
+        // Solve for froude number
+        hydraulicDepth = wettedArea / solveForTopWidth(waterDepth, triangleArea, almostFull);
+        froudeNumber = averageVelocity / sqrt(GRAVITY_METRIC * hydraulicDepth);
+
+        // Select the flow type
+        calculateFlowType();
     }
 }

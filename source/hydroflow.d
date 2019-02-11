@@ -1,3 +1,16 @@
+/**
+* hydroflow module.
+* Does all the initializations of the library including
+* public and private imports.
+*
+* Authors:
+*   [Alexius Academia]
+* License:
+*   Boost
+* Copyright:
+*   (c) 2019
+*/
+
 module hydroflow;
 
 public {
