@@ -203,41 +203,84 @@ class OpenChannel
         return wettedArea;
     }
 
+    /**
+     Returns the hydraulic radius in either meters
+     or feet.
+    */
     public double getHydraulicRadius()
     {
+        if (unit == Units.ENGLISH)
+        {
+            return hydraulicRadius * 3.28;
+        }
         return hydraulicRadius;
     }
 
+    /**
+     Returns the froude number
+    */
     public double getFroudeNumber()
     {
         return froudeNumber;
     }
 
+    /**
+     Retuens the manning's roughness coefficient.
+    */
     public double getManningRoughness()
     {
         return manningRoughness;
     }
 
+    /**
+     Returns the string representation of type of flow.
+    */
     public FlowType getFlowType()
     {
         return flowType;
     }
 
+    /**
+     Returns the hydraulic depth in either meter
+     or foot.
+    */
     public double getHydraulicDepth()
-    {
+    {   
+        if (unit == Units.ENGLISH)
+        {
+            return hydraulicDepth * 3.28;
+        }
         return hydraulicDepth;
     }
 
+    /**
+     Returns discharge intensity in either cubic meter per second per meter
+     or cubic foot per second per foot.
+    */
     public double getDischargeIntensity()
     {
+        if (unit == Units.ENGLISH)
+        {
+            return dischargeIntensity * pow(3.28, 2);
+        }
         return dischargeIntensity;
     }
 
+    /**
+     Returns critical depth in either meters or feet.
+    */
     public double getCriticalDepth()
     {
+        if (unit == Units.ENGLISH)
+        {
+            return criticalDepth * 3.28;
+        }
         return criticalDepth;
     }
 
+    /**
+     Returns the slope of the critical flow for the channel.
+    */
     public double getCriticalSlope()
     {
         return criticalSlope;
@@ -264,14 +307,29 @@ class OpenChannel
     //++++++++++++++++++++++++++++++++++++++++++++++ 
     //                 Setters                     +
     //+++++++++++++++++++++++++++++++++++++++++++++/
+
+    /**
+     Set the bed (bottom) slope of the channel.
+    */
     public void setBedSlope(double pBedSlope)
     {
         bedSlope = pBedSlope;
     }
 
+    /**
+     Sets the discharge in either cubic meter per second or
+     cubic foot per second.
+    */
     public void setDischarge(double pDischarge)
     {
-        discharge = pDischarge;
+        if (unit == Units.ENGLISH)
+        {
+            discharge = pDischarge / pow(3.28, 3);
+        } 
+        else 
+        {
+            discharge = pDischarge;
+        }
     }
 
     public void setWaterDepth(double pWaterDepth)
