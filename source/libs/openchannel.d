@@ -309,7 +309,9 @@ class OpenChannel
     //+++++++++++++++++++++++++++++++++++++++++++++/
 
     /**
-     Set the bed (bottom) slope of the channel.
+     Set the bed slope of the channel.
+     Params:
+        pBedSlope = Bed or bottom slope of the channel.
     */
     public void setBedSlope(double pBedSlope)
     {
@@ -317,7 +319,9 @@ class OpenChannel
     }
 
     /**
-     Sets the discharge in either cubic meter per second or
+     Sets the discharge.
+     Params:
+        pDeischarge = discharge in either cubic meter per second or
      cubic foot per second.
     */
     public void setDischarge(double pDischarge)
@@ -332,16 +336,31 @@ class OpenChannel
         }
     }
 
+    /**
+     Sets the water depth.
+     Params:
+        pWaterDepth = Water depth in either meter or foot.
+    */
     public void setWaterDepth(double pWaterDepth)
     {
         waterDepth = pWaterDepth;
     }
 
+    /**
+     Sets the manning roughness coefficient.
+     Params:
+        pManningRoughness = Manning's roughness coefficient.
+    */
     public void setManningRoughness(double pManningRoughness)
     {
         manningRoughness = pManningRoughness;
     }
 
+    /**
+     Sets the unknown based on the available unknowns of a specific channel type.
+     Params:
+        u = Unknown.
+    */
     public void setUnknown(Unknown u)
     {
         unknown = u;
