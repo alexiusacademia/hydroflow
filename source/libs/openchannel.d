@@ -17,11 +17,19 @@ class OpenChannel
     /// Gravitational acceleration in metric.
     protected const GRAVITY_METRIC = 9.81;
     /// Trial error max to 0.01%
-    protected const ERROR = 0.0001;            
+    protected const ERROR = 0.0001;
 
     // ****************************************
     // Properties
     //*************************************** */
+    /**
+    * Units options
+    */
+    enum Units
+    {
+        METRIC,
+        ENGLISH
+    }
     /**
     * Flow types. These are the categories in which the calculated froude number
     * is compared to.
@@ -42,6 +50,8 @@ class OpenChannel
         BASE_WIDTH,
         PIPE_DIAMETER
     }
+    /// Unit
+    protected Units unit;
 
     /// Discharge (Flow Rate)
     protected double discharge;
@@ -95,7 +105,7 @@ class OpenChannel
     /+++++++++++++++++++++++++++++++++++++++++++++++ 
     +                  Getters                     +
     +++++++++++++++++++++++++++++++++++++++++++++++/
-    
+
     /** Returns the rate of flow. */
     public double getDischarge()
     {
@@ -209,7 +219,8 @@ class OpenChannel
         manningRoughness = pManningRoughness;
     }
 
-    public void setUnknown(Unknown u) {
+    public void setUnknown(Unknown u)
+    {
         unknown = u;
     }
 
@@ -300,13 +311,16 @@ class OpenChannel
         return true;
     }
 
-    protected bool isValidDischarge(Unknown u) {
-        if (isNaN(discharge) && u != Unknown.DISCHARGE) {
+    protected bool isValidDischarge(Unknown u)
+    {
+        if (isNaN(discharge) && u != Unknown.DISCHARGE)
+        {
             errorMessage = "Discharge must be numeric.";
             return false;
         }
 
-        if (discharge < 0 && u != Unknown.DISCHARGE) {
+        if (discharge < 0 && u != Unknown.DISCHARGE)
+        {
             errorMessage = "Discharge must be set greater than zero.";
             return false;
         }
@@ -324,16 +338,9 @@ class OpenChannel
             res = res && b;
         }
 
-        if (res) errorMessage = "Calculation successful.";
+        if (res)
+            errorMessage = "Calculation successful.";
         return res;
     }
 
-}
-
-class InvalidInputException : Exception
-{
-    this(string msg, string file = __FILE__, size_t line = __LINE__)
-    {
-        super(msg, file, line);
-    }
 }

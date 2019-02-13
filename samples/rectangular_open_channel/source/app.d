@@ -33,6 +33,7 @@ void main()
 		writeln("Hydraulic depth = ", roc.getHydraulicDepth);
 		writeln("Flow type = ", roc.getFlowType);
 		writeln("Froude number = ", roc.getFroudeNumber);
+		writeln("Critical depth = ", roc.getCriticalDepth);
 	}
 	else
 	{
