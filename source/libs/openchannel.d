@@ -50,7 +50,10 @@ class OpenChannel
         BASE_WIDTH,
         PIPE_DIAMETER
     }
-    /// Unit
+    /** Unit of measurement.\
+     All calculations will be done in metric but both 
+     metric and imperial system are supported.
+    */
     protected Units unit;
 
     /// Discharge (Flow Rate)
@@ -102,39 +105,101 @@ class OpenChannel
     /// information about the calculation results.
     public string errorMessage;
 
-    /+++++++++++++++++++++++++++++++++++++++++++++++ 
-    +                  Getters                     +
-    +++++++++++++++++++++++++++++++++++++++++++++++/
-
-    /** Returns the rate of flow. */
-    public double getDischarge()
+    //++++++++++++++++++++++++++++++++++++++++++++++ 
+    //               Constructors                  +
+    //+++++++++++++++++++++++++++++++++++++++++++++/
+    
+    /**
+    * Empty constructor.
+    * The unit is automatically set to S.I. (Metric).
+    */
+    this()
     {
-        return discharge;
+        unit = Units.METRIC;
     }
 
-    /** Returns the average velocity in the channel. */
+    /**
+    * Constructor that specifies the unit to be used.
+    */
+    this(Units u)
+    {
+        unit = u;
+    }
+
+    //++++++++++++++++++++++++++++++++++++++++++++++ 
+    //                 Getters                     +
+    //+++++++++++++++++++++++++++++++++++++++++++++/
+
+    /** 
+    Returns the rate of flow in either cubic meter per second (metric)
+    or cubic feet per second (english). 
+    */
+    public double getDischarge()
+    {
+        if (unit == Units.ENGLISH)
+        {
+            return discharge * pow(3.28, 3);
+        } else {
+            return discharge;
+        }
+    }
+
+    /** 
+     Returns the average velocity in the channel in either  meter per second (metric)
+     or feet per second (english). 
+    */
     public double getAverageVelocity()
     {
+        if (unit == Units.ENGLISH)
+        {
+            return averageVelocity * 3.28;
+        }
         return averageVelocity;
     }
 
+    /**
+     Returns the bed (bottom) slope of the channel.
+    */
     public double getBedSlope()
     {
         return bedSlope;
     }
 
+    /**
+     Returns the water depth in either meter
+     or feet.
+     */
     public double getWaterDepth()
     {
+        if (unit == Units.ENGLISH)
+        {
+            return waterDepth * 3.28;
+        }
         return waterDepth;
     }
 
+    /**
+     Returns the wet perimeter in either meter of feet.
+    */
     public double getWettedPerimeter()
     {
+        if (unit == Units.ENGLISH)
+        {
+            return wettedPerimeter * 3.28;
+        }
         return wettedPerimeter;
     }
 
+    /**
+     Returns the wet area in either square meter or
+     square foot.
+    */
     public double getWettedArea()
     {
+        if (unit == Units.ENGLISH)
+        {
+            return wettedArea * pow(3.28, 2);
+        }
         return wettedArea;
     }
 
@@ -196,9 +261,9 @@ class OpenChannel
         return errorMessage;
     }
 
-    /+++++++++++++++++++++++++++++++++++++++++++++++ 
-    +                  Setters                     +
-    +++++++++++++++++++++++++++++++++++++++++++++++/
+    //++++++++++++++++++++++++++++++++++++++++++++++ 
+    //                 Setters                     +
+    //+++++++++++++++++++++++++++++++++++++++++++++/
     public void setBedSlope(double pBedSlope)
     {
         bedSlope = pBedSlope;
@@ -224,9 +289,9 @@ class OpenChannel
         unknown = u;
     }
 
-    /+++++++++++++++++++++++++++++++++++++++++++++++
-    +                   Methods                    +
-    +++++++++++++++++++++++++++++++++++++++++++++++/
+    //++++++++++++++++++++++++++++++++++++++++++++++
+    //                  Methods                    +
+    //+++++++++++++++++++++++++++++++++++++++++++++/
     protected void calculateFlowType()
     {
         // Flow type
