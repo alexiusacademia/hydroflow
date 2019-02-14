@@ -1,7 +1,5 @@
 # hydroflow
 
-### v1.0.0
-
 A D-library for hydraulics calculations. This library was created to aide civil engineers and hydraulics engineers in calculation phase of their design or analysis.
 
 
@@ -26,20 +24,20 @@ Only one import is necessary to use the library.
 import hydroflow;
 ```
 
-All submodules will be imported automatically.
+All submodules will be imported by this module.
 
-
+### Solutions
 
 #### 1. Rectangular Open Channel
 
 Say we are given a rectangular channel problem and the unknown is the depth of the water in the channel:
 
-| Given                              | Value      |
-| ---------------------------------- | ---------- |
+| Given                              |              Value |
+| :--------------------------------- | -----------------: |
 | Dicharge, Q                        | 1.0  m<sup>3</sup> |
-| Bed Slope, S                       | 0.00 1    |
-| Base Width, b                      | 1.0 m     |
-| Manning's Roughness Coefficient, n | 0.015      |
+| Bed Slope, S                       |              0.001 |
+| Base Width, b                      |              1.0 m |
+| Manning's Roughness Coefficient, n |              0.015 |
 
 To solve this, you may refer to the code below:
 
@@ -67,3 +65,12 @@ void main()
 }
 ```
 
+### Using Different Unit
+
+By default, the unit used is in metric. There are two (2) units available, the other is the english system.
+
+To set the unit to english:
+```D
+RectangularOpenChannel roc = new RectangularOpenChannel();
+roc.setUnit = roc.Units.ENGLISH;
+```
