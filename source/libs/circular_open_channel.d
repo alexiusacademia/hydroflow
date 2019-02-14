@@ -4,7 +4,12 @@
 * Note: Careful for the flowing full channel as this module
 *   calculates even if the channel is full, even though that case
 *   falls on closed conduits.
-* 
+* Authors:
+*   Alexius Academia
+* License:
+*   MIT
+* Copyright:
+*   Alexius Academia, 2019
 */
 module libs.circular_open_channel;
 

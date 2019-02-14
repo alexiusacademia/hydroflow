@@ -7,11 +7,11 @@
 * License:
 *   MIT
 * Copyright:
-*   2019
+*   Alexius Academia, 2019
 */
 module libs.irregular_section_open_channel;
 
-/// Standard modules
+// Standard modules
 import std.math;
 import std.stdio;
 import std.algorithm;
@@ -23,7 +23,9 @@ import libs.utils.geometry_calculators;
 
 /**
 * Class for the analysis of irregular shaped sections
-* of open channel.
+* of open channel.\
+* Unit is disregarded in this class as the inputs can all be
+* unit independent.
 */
 class IrregularSectionOpenChannel : OpenChannel
 {
@@ -62,7 +64,7 @@ class IrregularSectionOpenChannel : OpenChannel
     /**
     * Sets the water elevation.
     * Params:
-    *   we = Water elevation.
+    *   we = Water elevation either in meter or in foot.
     */
     void setWaterElevation(float we)
     {
@@ -92,7 +94,7 @@ class IrregularSectionOpenChannel : OpenChannel
     /**
     * Get the elevation of the lower bank. Either from left or right.
     * Returns: 
-    *   maxWaterElevation
+    *   maxWaterElevation = Lowest bank elevation either in meter or foot.
     */
     float getMaxWaterElevation()
     {
