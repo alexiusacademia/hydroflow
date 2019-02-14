@@ -369,6 +369,9 @@ class OpenChannel
     //++++++++++++++++++++++++++++++++++++++++++++++
     //                  Methods                    +
     //+++++++++++++++++++++++++++++++++++++++++++++/
+    /**
+     Determines the flow type based on the froude number.
+    */
     protected void calculateFlowType()
     {
         // Flow type
@@ -453,6 +456,9 @@ class OpenChannel
         return true;
     }
 
+    /**
+     Discharge error checking.
+    */
     protected bool isValidDischarge(Unknown u)
     {
         if (isNaN(discharge) && u != Unknown.DISCHARGE)
