@@ -1,0 +1,14 @@
+.dub
+docs.json
+__dummy.html
+docs/
+trapezoidal.so
+trapezoidal.dylib
+trapezoidal.dll
+trapezoidal.a
+trapezoidal.lib
+trapezoidal-test-*
+*.exe
+*.o
+*.obj
+*.lst

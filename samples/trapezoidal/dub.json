@@ -1,0 +1,14 @@
+{
+	"description": "A minimal D application.",
+	"license": "proprietary",
+	"authors": [
+		"Alexius Academia"
+	],
+	"dependencies": {
+		"hydroflow": {
+			"path": "../.."
+		}
+	},
+	"copyright": "Copyright © 2019, Alexius Academia",
+	"name": "trapezoidal"
+}

@@ -30,23 +30,6 @@ class TrapezoidalOpenChannel : OpenChannel
         Unknown.DISCHARGE, Unknown.WATER_DEPTH, Unknown.BED_SLOPE, Unknown.BASE_WIDTH
     ];
 
-    //++++++++++++++++++++++++++++++++++++++++++++++
-    //               Constructors                  +
-    //+++++++++++++++++++++++++++++++++++++++++++++/
-    /// Empty Constructor
-    this()
-    {
-        this.unknown = Unknown.DISCHARGE;
-    }
-
-    /// Initialize the RectangularOpenChannel with the unknown as given
-    /// Params:
-    ///     u = Unknown
-    this(Unknown u)
-    {
-        this.unknown = u;
-    }
-
     //++++++++++++++++++++++++++++++++++++++++++++++ 
     //                 Setters                     +
     //+++++++++++++++++++++++++++++++++++++++++++++/
@@ -57,7 +40,14 @@ class TrapezoidalOpenChannel : OpenChannel
     */
     void setBaseWidth(double b)
     {
-        baseWidth = b;
+        if (unit == Units.ENGLISH)
+        {
+            baseWidth = b / 3.28;
+        }
+        else
+        {
+            baseWidth = b;
+        }
     }
 
     /**
@@ -76,6 +66,10 @@ class TrapezoidalOpenChannel : OpenChannel
     /// Returns the base width of the channel.
     double getBaseWidth()
     {
+        if (unit == Units.ENGLISH)
+        {
+            return baseWidth * 3.28;
+        }
         return baseWidth;
     }
 
