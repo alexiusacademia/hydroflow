@@ -329,7 +329,7 @@ class OpenChannel
     {
         if (unit == Units.ENGLISH)
         {
-            discharge = pDischarge / pow(3.28, 3);
+            discharge = pDischarge * pow(1 / 3.28, 3);
         } 
         else 
         {
@@ -344,7 +344,14 @@ class OpenChannel
     */
     public void setWaterDepth(double pWaterDepth)
     {
-        waterDepth = pWaterDepth;
+        if (unit == Units.ENGLISH)
+        {
+            waterDepth = pWaterDepth / 3.28;
+        } 
+        else
+        {
+            waterDepth = pWaterDepth;
+        }
     }
 
     /**
