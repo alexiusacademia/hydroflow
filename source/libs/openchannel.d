@@ -54,7 +54,7 @@ class OpenChannel
      All calculations will be done in metric but both 
      metric and imperial system are supported.
     */
-    protected Units unit;
+    protected Units unit = Units.METRIC;
 
     /// Discharge (Flow Rate)
     protected double discharge;
@@ -115,16 +115,14 @@ class OpenChannel
     */
     this()
     {
-        unit = Units.METRIC;
+        this.intialize();
     }
 
     /**
-    * Constructor that specifies the unit to be used.
+     Put all the initializations here.
     */
-    this(Units u)
-    {
-        unit = u;
-    }
+    protected void intialize()
+    {}
 
     //++++++++++++++++++++++++++++++++++++++++++++++ 
     //                 Getters                     +
@@ -364,6 +362,16 @@ class OpenChannel
     public void setUnknown(Unknown u)
     {
         unknown = u;
+    }
+
+    /**
+     Sets the unit.
+     Params:
+        u = Unit
+    */
+    public void setUnit(Units u)
+    {
+        unit = u;
     }
 
     //++++++++++++++++++++++++++++++++++++++++++++++
