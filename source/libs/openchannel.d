@@ -122,7 +122,10 @@ class OpenChannel
      Put all the initializations here.
     */
     protected void intialize()
-    {}
+    {
+        unknown = Unknown.DISCHARGE;
+        unit = Units.METRIC;
+    }
 
     //++++++++++++++++++++++++++++++++++++++++++++++ 
     //                 Getters                     +

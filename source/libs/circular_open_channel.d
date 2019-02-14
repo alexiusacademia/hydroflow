@@ -8,11 +8,11 @@
 */
 module libs.circular_open_channel;
 
-/// Standard modules
+// Standard modules
 import std.math : sqrt, abs, pow, isNaN, PI, sin, acos;
 import std.algorithm : canFind;
 
-/// Custom modules
+// Custom modules
 import libs.openchannel;
 
 /**
@@ -41,32 +41,22 @@ class CircularOpenChannel : OpenChannel
         Unknown.DISCHARGE, Unknown.WATER_DEPTH, Unknown.BED_SLOPE
     ];
 
-    //++++++++++++++++++++++++++++++++++++++++++++++
-    //               Constructors                  +
-    //+++++++++++++++++++++++++++++++++++++++++++++/
-    /// Empty Constructor
-    this()
-    {
-        this.unknown = Unknown.DISCHARGE;
-    }
-
-    /// Initialize the RectangularOpenChannel with the unknown as given
-    this(Unknown u)
-    {
-        unknown = u;
-    }
-
     //++++++++++++++++++++++++++++++++++++++++++++++ 
     //                 Setters                     +
     //+++++++++++++++++++++++++++++++++++++++++++++/
     /**
     * Sets the pipe diameter.
     * Params:
-    *   d = Diameter given.
+    *   d = Diameter given either in meter or in foot..
     */
     void setDiameter(double d)
     {
-        diameter = d;
+        if (unit == Units.ENGLISH)
+        {
+            diameter = d / 3.28;
+        } else {
+            diameter = d;
+        }
     }
 
     //++++++++++++++++++++++++++++++++++++++++++++++ 
@@ -76,10 +66,14 @@ class CircularOpenChannel : OpenChannel
     /**
     * Gets the diameter of the pipe. 
     * Returns:
-    *   The pipe diameter.
+    *   The pipe diameter either in meter on in foot.
     */
     double getDiameter()
     {
+        if (unit == Units.ENGLISH)
+        {
+            return diameter * 3.28;
+        }
         return diameter;
     }
 
