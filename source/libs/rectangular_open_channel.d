@@ -32,14 +32,6 @@ class RectangularOpenChannel : OpenChannel
     Unknown.DISCHARGE, Unknown.WATER_DEPTH, Unknown.BED_SLOPE, Unknown.BASE_WIDTH
   ];
 
-  //++++++++++++++++++++++++++++++++++++++++++++++
-  //               Constructors                  +
-  //+++++++++++++++++++++++++++++++++++++++++++++/
-  /// Empty Constructor
-  this()
-  {
-    this.unknown = Unknown.DISCHARGE;
-  }
   /**
   * Initialize the RectangularOpenChannel with the unknown as given
   * Params:
