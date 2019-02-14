@@ -48,11 +48,18 @@ class RectangularOpenChannel : OpenChannel
   /** 
   * Sets the width of the base of the channel.
   * Params:
-  *   b = Width of the channel.
+  *   b = Width of the channel either in meter or foot.
   */
   void setBaseWidth(double b)
   {
-    baseWidth = b;
+    if (unit == Units.ENGLISH)
+    {
+      baseWidth = b / 3.28;
+    }
+    else
+    {
+      baseWidth = b; 
+    }
   }
 
   //++++++++++++++++++++++++++++++++++++++++++++++ 
@@ -61,6 +68,10 @@ class RectangularOpenChannel : OpenChannel
   /// Returns the width of the channel.
   double getBaseWidth()
   {
+    if (unit == Units.ENGLISH)
+    {
+      return baseWidth * 3.28;
+    }
     return baseWidth;
   }
 
