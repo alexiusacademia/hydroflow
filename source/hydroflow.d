@@ -19,5 +19,7 @@ public {
     import libs.trapezoidal_open_channel;
     import libs.circular_open_channel;
 
+    import libs.weirs.sharpcrested;
+
     import libs.utils.point;
 }

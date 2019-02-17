@@ -1,0 +1,14 @@
+{
+	"description": "Implementation of SharpCrestedWeir class.",
+	"license": "MIT",
+	"authors": [
+		"Alexius Academia"
+	],
+	"dependencies": {
+		"hydroflow": {
+			"path": "../../.."
+		}
+	},
+	"copyright": "Copyright © 2019, Alexius Academia",
+	"name": "sample_sharpcrested"
+}
