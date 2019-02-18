@@ -11,12 +11,12 @@ class Weir
     ///////////////////////////////////////
     //  Constants                        //
     ///////////////////////////////////////
-    const double TRIAL_INCREMENT = 0.0001;
-
+    protected const double ERROR = 0.002;             // Allowed accuracy in iteration
+    
     ///////////////////////////////////////
     //  Properties                       //
     ///////////////////////////////////////
-
+    protected double TRIAL_INCREMENT = 0.0001;
     /// Total discharge that will flow over a weir.
     double discharge;
     /// Length of the topmost of the crest
