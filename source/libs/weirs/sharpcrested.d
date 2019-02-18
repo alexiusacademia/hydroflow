@@ -11,6 +11,10 @@ module libs.weirs.sharpcrested;
 */
 class SharpCrestedWeir 
 {
+    ///////////////////////////////////////
+    //  Properties                       //
+    ///////////////////////////////////////
+
     /**
         Empty constructor.
     */
