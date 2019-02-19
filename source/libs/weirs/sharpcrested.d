@@ -8,7 +8,7 @@ import libs.weirs.weir;
 import libs.utils.constants;
 import libs.utils.hydraulics;
 
-import std.math: abs, pow, sqrt;
+import std.math: abs, pow, sqrt, isNaN;
 import std.stdio;
 
 /**
@@ -44,8 +44,13 @@ class SharpCrestedWeir : Weir
     //++++++++++++++++++++++++++++++++++++++++++++++
     //                  Methods                    +
     //+++++++++++++++++++++++++++++++++++++++++++++/
-    void analysis()
+    bool analysis()
     {
+        if (!isValidInputs) 
+        {
+            return false;
+        }
+
         double trialDischarge = 0;
 
         // Reset increment to default
@@ -84,6 +89,7 @@ class SharpCrestedWeir : Weir
             }
             cs = co * correction;
             calculatedDischargeIntensity = cs / 1.811 * pow(ho, (3.0 / 2.0));
+
             // My root-finding acceleration
             if (calculatedDischargeIntensity < dischargeIntensity)
             {
@@ -118,5 +124,50 @@ class SharpCrestedWeir : Weir
             d2 = (-1 * d1 / 2) + sqrt((pow(d1, 2) / 4.0) + (2 * pow(v1, 2) * d1 / GRAVITY));
             f = v1 / sqrt(d1 * GRAVITY);
         }
+
+        errorMessage = "Calculation successful.";
+        return true;
+    }
+
+    private bool isValidInputs()
+    {
+        // Check for each input
+        if (isNaN(discharge))
+        {
+            errorMessage = "Discharge must be set.";
+            return false;
+        }
+
+        if (isNaN(crestElev))
+        {
+            errorMessage = "Crest elevation must be set.";
+            return false;
+        }
+
+        if (isNaN(crestLength))
+        {
+            errorMessage = "Crest length must be set.";
+            return false;
+        }
+
+        if (isNaN(usApronElev))
+        {
+            errorMessage = "Elevation of upstream apron must be set.";
+            return false;
+        }
+
+        if (isNaN(dsApronElev))
+        {
+            errorMessage = "Elevation of downstream apron must be set.";
+            return false;
+        }
+
+        if (isNaN(tailwaterElev))
+        {
+            errorMessage = "Elevation of tail water must be set.";
+            return false;
+        }
+
+        return true;
     }
 }
