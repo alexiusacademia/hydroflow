@@ -74,3 +74,25 @@ To set the unit to english:
 RectangularOpenChannel roc = new RectangularOpenChannel();
 roc.setUnit = roc.Units.ENGLISH;
 ```
+
+#### 2. Analysis of Sharp-Crested (Gated) Weirs
+```D
+SharpCrestedWeir scw = new SharpCrestedWeir();
+
+// Uncomment line below to make inputs valid.
+// scw.discharge = 100;
+scw.usApronElev = 50;
+scw.dsApronElev = 49.4;
+scw.crestLength = 30;
+scw.crestElev = 52;
+scw.tailwaterElev = 52.5;
+
+if (scw.analysis())
+{
+	writeln("Afflux elevation: ", scw.affluxElevation);
+} 
+else
+{
+	writeln(scw.errorMessage);
+}
+```

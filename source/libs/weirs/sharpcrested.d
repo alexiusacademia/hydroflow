@@ -44,8 +44,13 @@ class SharpCrestedWeir : Weir
     //++++++++++++++++++++++++++++++++++++++++++++++
     //                  Methods                    +
     //+++++++++++++++++++++++++++++++++++++++++++++/
-    void analysis()
+    bool analysis()
     {
+        if (!isValidInputs) 
+        {
+            return false;
+        }
+
         double trialDischarge = 0;
 
         // Reset increment to default
@@ -119,6 +124,9 @@ class SharpCrestedWeir : Weir
             d2 = (-1 * d1 / 2) + sqrt((pow(d1, 2) / 4.0) + (2 * pow(v1, 2) * d1 / GRAVITY));
             f = v1 / sqrt(d1 * GRAVITY);
         }
+
+        errorMessage = "Calculation successful.";
+        return true;
     }
 
     private bool isValidInputs()
