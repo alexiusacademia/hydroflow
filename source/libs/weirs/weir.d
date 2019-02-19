@@ -11,7 +11,7 @@ class Weir
     ///////////////////////////////////////
     //  Constants                        //
     ///////////////////////////////////////
-    protected const double ERROR = 0.002;             // Allowed accuracy in iteration
+    protected const double ERROR = 0.0001;             // Allowed accuracy in iteration
     
     ///////////////////////////////////////
     //  Properties                       //
@@ -34,5 +34,5 @@ class Weir
 
     double calculatedDischargeIntensity;
 
-    protected double affluxElevation;
+    double affluxElevation;
 }
