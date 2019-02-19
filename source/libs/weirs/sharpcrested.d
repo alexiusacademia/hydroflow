@@ -9,6 +9,7 @@ import libs.utils.constants;
 import libs.utils.hydraulics;
 
 import std.math: abs, pow, sqrt;
+import std.stdio;
 
 /**
     SharpCrestedWeir class.
@@ -51,8 +52,14 @@ class SharpCrestedWeir : Weir
         TRIAL_INCREMENT = 0.0001;
 
         dischargeIntensity = discharge / crestLength;
-        affluxElevation += TRIAL_INCREMENT;
+
+        // Afflux elevation initial assumption
+        affluxElevation = crestElev > tailwaterElev ? crestElev : tailwaterElev;
+
+        // Accuracy closure
         const allowedDiff = discharge * ERROR;
+
+        calculatedDischargeIntensity = 0;
 
         // Calculation for the afflux elevation
         while (abs(dischargeIntensity - calculatedDischargeIntensity) > allowedDiff) 
@@ -60,7 +67,7 @@ class SharpCrestedWeir : Weir
             affluxElevation += TRIAL_INCREMENT;
             dA = affluxElevation - usApronElev;
             vA = dischargeIntensity / dA;
-            hA = pow(vA, 2) / (2 * GRAVITY);
+            hA = velocityHead(vA);
             eE = affluxElevation + hA;
             ho = eE - crestElev;
             co = 3.33 * (1 + 0.259 * pow(ho, 2) / pow(dA, 2));
@@ -77,7 +84,6 @@ class SharpCrestedWeir : Weir
             }
             cs = co * correction;
             calculatedDischargeIntensity = cs / 1.811 * pow(ho, (3.0 / 2.0));
-
             // My root-finding acceleration
             if (calculatedDischargeIntensity < dischargeIntensity)
             {
