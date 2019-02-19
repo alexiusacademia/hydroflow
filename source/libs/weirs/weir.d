@@ -35,4 +35,6 @@ class Weir
     double calculatedDischargeIntensity;
 
     double affluxElevation;
+
+    string errorMessage;
 }
