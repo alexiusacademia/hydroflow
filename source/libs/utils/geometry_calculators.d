@@ -58,3 +58,12 @@ double distanceBetweenTwoPoints(Point p1, Point p2)
     y2 = p2.y;
     return sqrt(pow((y2 - y1), 2) + pow((x2 - x1), 2));
 }
+
+float interpolate(float x1, float x3, float y1, float y2, float y3)
+{
+    float x2 = x1;
+
+    x2 = (y2 - y3) / (y1 - y3) * (x1 - x3) + x3;
+
+    return x2;
+}
