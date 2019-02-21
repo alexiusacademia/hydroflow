@@ -5,7 +5,7 @@ void main()
 {
 	SharpCrestedWeir scw = new SharpCrestedWeir();
 
-	// scw.discharge = 100;
+	scw.discharge = 100;
 	scw.usApronElev = 50;
 	scw.dsApronElev = 49.4;
 	scw.crestLength = 30;
@@ -15,10 +15,10 @@ void main()
 	if (scw.analysis())
 	{
 		writeln("Afflux elevation: ", scw.affluxElevation);
+		writeln("Hydraulic jump: ", scw.lengthOfHydraulicJump);
 	} 
 	else
 	{
 		writeln(scw.errorMessage);
 	}
-	
 }

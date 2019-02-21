@@ -109,11 +109,12 @@ class SharpCrestedWeir : Weir
                 he,
                 he2 = 0,                // Pre-jump height to energy grade elevation
                 v1,
-                hv1,
-                f;                      // Froude number
+                hv1;
+        float f;                        // Froude number
         
         TRIAL_INCREMENT = 0.0001;       // Reset
         d1 = 0;
+        he = eE - dsApronElev;
 
         while (abs(he - he2) > ERROR)
         {
@@ -123,6 +124,13 @@ class SharpCrestedWeir : Weir
             he2 = d1 + hv1;
             d2 = (-1 * d1 / 2) + sqrt((pow(d1, 2) / 4.0) + (2 * pow(v1, 2) * d1 / GRAVITY));
             f = v1 / sqrt(d1 * GRAVITY);
+        }
+
+        if (f <= 1.7)
+        {
+            lengthOfHydraulicJump = 4 * d2;
+        } else {
+            lengthOfHydraulicJump = hydraulicJump(f);
         }
 
         errorMessage = "Calculation successful.";

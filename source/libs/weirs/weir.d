@@ -36,5 +36,7 @@ class Weir
 
     double affluxElevation;
 
+    double lengthOfHydraulicJump;
+
     string errorMessage;
 }
