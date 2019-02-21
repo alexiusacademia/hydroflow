@@ -168,6 +168,20 @@ class SharpCrestedWeir : Weir
             return false;
         }
 
+        // Check if tailwater if lower than downstream apron
+        if (tailwaterElev < dsApronElev) 
+        {
+            errorMessage = "Tailwater elevation must be set higher or the same as downstream apron.";
+            return false;
+        }
+
+        // Check crest is lower than upstream apron
+        if (crestElev < usApronElev)
+        {
+            errorMessage = "Crest elevation must be the same or higher then upstream apron.";
+            return false;
+        }
+
         return true;
     }
 }
