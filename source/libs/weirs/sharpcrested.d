@@ -44,6 +44,10 @@ class SharpCrestedWeir : Weir
     //++++++++++++++++++++++++++++++++++++++++++++++
     //                  Methods                    +
     //+++++++++++++++++++++++++++++++++++++++++++++/
+
+    /**
+        Performs the hydraulic analysis for sharp-crested (gated) weirs/diversion dams.
+    */
     bool analysis()
     {
         if (!isValidInputs) 
@@ -51,10 +55,9 @@ class SharpCrestedWeir : Weir
             return false;
         }
 
-        double trialDischarge = 0;
-
-        // Reset increment to default
+        // Reset values
         TRIAL_INCREMENT = 0.0001;
+        calculatedDischargeIntensity = 0;
 
         dischargeIntensity = discharge / crestLength;
 
@@ -63,8 +66,6 @@ class SharpCrestedWeir : Weir
 
         // Accuracy closure
         const allowedDiff = discharge * ERROR;
-
-        calculatedDischargeIntensity = 0;
 
         // Calculation for the afflux elevation
         while (abs(dischargeIntensity - calculatedDischargeIntensity) > allowedDiff) 
@@ -116,6 +117,8 @@ class SharpCrestedWeir : Weir
         d1 = 0;
         he = eE - dsApronElev;
 
+        // Froude number calculation
+        // Hydraulic jump calculation
         while (abs(he - he2) > ERROR)
         {
             d1 += TRIAL_INCREMENT;
@@ -126,12 +129,16 @@ class SharpCrestedWeir : Weir
             f = v1 / sqrt(d1 * GRAVITY);
         }
 
-        if (f <= 1.7)
+        // Length of hydraulic jump
+        if (f < 1.6)
         {
             lengthOfHydraulicJump = 4 * d2;
         } else {
             lengthOfHydraulicJump = hydraulicJump(f);
         }
+
+        preJumpElev = dsApronElev + d1;
+        jumpElev = dsApronElev + d2;
 
         errorMessage = "Calculation successful.";
         return true;
