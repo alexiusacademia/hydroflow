@@ -51,7 +51,64 @@ class BroadCrestedWeir : Weir
     */
     bool analysis()
     {
-        
+        if (!isValidInputs) 
+        {
+            return false;
+        }
+
+        // Reset values
+        TRIAL_INCREMENT = 0.0001;
+        calculatedDischargeIntensity = 0;
+
+        dischargeIntensity = discharge / crestLength;
+
+        // Afflux elevation initial assumption
+        affluxElevation = crestElev > tailwaterElev ? crestElev : tailwaterElev;
+
+        // Accuracy closure
+        const allowedDiff = discharge * ERROR;
+
+        // Calculation for the afflux elevation
+        while (abs(dischargeIntensity - calculatedDischargeIntensity) > allowedDiff) 
+        {
+            affluxElevation += TRIAL_INCREMENT;
+            dA = affluxElevation - usApronElev;
+            vA = dischargeIntensity / dA;
+            hA = velocityHead(vA);
+            eE = affluxElevation + hA;
+            ho = eE - crestElev;
+            co = 3.087;
+            h1 = affluxElevation - crestElev;
+            h2 = tailwaterElev - crestElev;
+            h2_h1 = h2 / h1;
+            if (h2 <= 0)
+            {
+                correction = 1;
+            }
+            else
+            {
+                // correction = pow((1 - pow(h2_h1, (3.0/2.0))), 0.385);
+                // APply correction for broad crested weirs
+
+            }
+            cs = co * correction;
+            calculatedDischargeIntensity = cs / 1.811 * pow(ho, (3.0 / 2.0));
+
+            // My root-finding acceleration
+            if (calculatedDischargeIntensity < dischargeIntensity)
+            {
+                TRIAL_INCREMENT *= 2.1;
+            }
+            else
+            {
+                affluxElevation -= TRIAL_INCREMENT;
+                TRIAL_INCREMENT *= 0.75;
+            }
+            // End of root finding acceleration
+        }
+
+        errorMessage = "Calculation successful.";
+        return true;
     }
 
     private bool isValidInputs()
@@ -108,5 +165,12 @@ class BroadCrestedWeir : Weir
         }
 
         return true;
+    }
+
+    private double broadCrestedWeirCorrection(double h2_h1)
+    {
+
+
+        return 0;
     }
 }
