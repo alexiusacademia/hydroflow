@@ -7,6 +7,7 @@ module libs.weirs.broadcrested;
 import libs.weirs.weir;
 import libs.utils.constants;
 import libs.utils.hydraulics;
+import libs.utils.geometry_calculators;
 
 import std.math: abs, pow, sqrt, isNaN;
 import std.stdio;
@@ -89,7 +90,7 @@ class BroadCrestedWeir : Weir
             {
                 // correction = pow((1 - pow(h2_h1, (3.0/2.0))), 0.385);
                 // APply correction for broad crested weirs
-
+                correction = broadCrestedWeirCorrection(h2_h1);
             }
             cs = co * correction;
             calculatedDischargeIntensity = cs / 1.811 * pow(ho, (3.0 / 2.0));
@@ -106,6 +107,42 @@ class BroadCrestedWeir : Weir
             }
             // End of root finding acceleration
         }
+
+        // Calculation for the hydraulic jump
+        double d1,                      // Pre-jump height
+                d2,                     // Hydraulic jump height
+                he,
+                he2 = 0,                // Pre-jump height to energy grade elevation
+                v1,
+                hv1;
+        float f;                        // Froude number
+        
+        TRIAL_INCREMENT = 0.0001;       // Reset
+        d1 = 0;
+        he = eE - dsApronElev;
+
+        // Froude number calculation
+        // Hydraulic jump calculation
+        while (abs(he - he2) > ERROR)
+        {
+            d1 += TRIAL_INCREMENT;
+            v1 = dischargeIntensity / d1;
+            hv1 = velocityHead(v1);
+            he2 = d1 + hv1;
+            d2 = (-1 * d1 / 2) + sqrt((pow(d1, 2) / 4.0) + (2 * pow(v1, 2) * d1 / GRAVITY));
+            f = v1 / sqrt(d1 * GRAVITY);
+        }
+
+        // Length of hydraulic jump
+        if (f < 1.6)
+        {
+            lengthOfHydraulicJump = 4 * d2;
+        } else {
+            lengthOfHydraulicJump = hydraulicJump(f);
+        }
+
+        preJumpElev = dsApronElev + d1;
+        jumpElev = dsApronElev + d2;
 
         errorMessage = "Calculation successful.";
         return true;
@@ -169,8 +206,30 @@ class BroadCrestedWeir : Weir
 
     private double broadCrestedWeirCorrection(double h2_h1)
     {
+        // hs/hc = []
+        // Cs/C = []
+        double correction = 0;
+        const double[11][2] cs_c = [
+            [
+                0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1
+            ],
+            [
+                1, 0.991, 0.983, 0.972, 0.956, 0.937, 0.907, 0.856, 0.778, 0.621, 0
+            ]
+        ];
 
+        for (int i = 0; i < (cs_c.length - 1); i++)
+        {
+            if (h2_h1 >= cs_c[0][i] && h2_h1 < cs_c[0][i+1])
+        {
+            correction = interpolate(cs_c[1][i],
+                                cs_c[1][i + 1],
+                                cs_c[0][i],
+                                h2_h1,
+                                cs_c[0][i + 1]);
+            }
+        }
 
-        return 0;
+        return correction;
     }
 }
