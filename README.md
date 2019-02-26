@@ -13,6 +13,7 @@ A D-library for hydraulics calculations. This library was created to aide civil 
 - [ ] Diversion Dam Analysis
 	- [x] Sharp-crested weir
 	- [x] Broad-crested weir
+	- [ ] Ogee-shaped weir
 - [ ] Reservoir construction and operation studies
 
 
@@ -27,7 +28,7 @@ import hydroflow;
 
 All submodules will be imported by this module.
 
-### Solutions
+### Solutions:
 
 #### 1. Rectangular Open Channel
 
@@ -77,6 +78,7 @@ roc.setUnit = roc.Units.ENGLISH;
 ```
 
 #### 2. Analysis of Sharp-Crested (Gated) Weirs
+Currently, the analysis for sharp-crested weirs only support metric system (meters, meters/second, cubic meters/sec).
 ```D
 SharpCrestedWeir scw = new SharpCrestedWeir();
 
@@ -90,10 +92,13 @@ scw.tailwaterElev = 52.5;
 
 if (scw.analysis())
 {
+	// If the analysis has returned no error during 
+	// calculation and error checking.
 	writeln("Afflux elevation: ", scw.affluxElevation);
 } 
 else
 {
+	// Displays the error message.
 	writeln(scw.errorMessage);
 }
 ```
