@@ -11,7 +11,8 @@ A D-library for hydraulics calculations. This library was created to aide civil 
 - [ ] Simple Weirs
 
 - [ ] Diversion Dam Analysis
-
+	- [x] Sharp-crested weir
+	- [x] Broad-crested weir
 - [ ] Reservoir construction and operation studies
 
 
