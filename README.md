@@ -82,19 +82,18 @@ Currently, the analysis for sharp-crested weirs only support metric system (mete
 ```D
 SharpCrestedWeir scw = new SharpCrestedWeir();
 
-// Uncomment line below to make inputs valid.
-// scw.discharge = 100;
-scw.usApronElev = 50;
-scw.dsApronElev = 49.4;
-scw.crestLength = 30;
-scw.crestElev = 52;
-scw.tailwaterElev = 52.5;
+scw.setDischarge = 100;
+scw.setUSApronElev = 50;
+scw.setDSApronElev = 49.4;
+scw.setCrestLength = 30;
+scw.setCrestElev = 52;
+scw.setTailwaterElev = 52.5;
 
 if (scw.analysis())
 {
 	// If the analysis has returned no error during 
 	// calculation and error checking.
-	writeln("Afflux elevation: ", scw.affluxElevation);
+	writeln("Afflux elevation: ", scw.getAffluxElevation);
 } 
 else
 {
